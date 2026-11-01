@@ -1,0 +1,4 @@
+flet
+fastapi
+uvicorn
+requests
