@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Детектор внимания — сборка и экраны</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; padding: 26px 20px 56px;
+        font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        background: radial-gradient(90% 60% at 50% 0%, #3a1a63 0%, #1b0733 62%, #120525 100%);
+        color: #fff;
+      }
+      h1 { margin: 0 0 4px; text-align: center; font-size: clamp(20px, 4vw, 30px); }
+      p.sub { margin: 0 auto 22px; max-width: 700px; text-align: center; font-size: 14px; line-height: 1.55; color: #cdb9ee; }
+      p.sub a { color: #ffd76a; text-decoration: none; border-bottom: 1px solid rgba(255,215,106,.45); }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; max-width: 1120px; margin: 0 auto 26px; }
+      .card { border-radius: 18px; padding: 16px; background: linear-gradient(180deg, rgba(120,74,190,.30), rgba(40,16,76,.55)); border: 1.5px solid rgba(255,255,255,.18); }
+      .card h2 { margin: 0 0 6px; font-size: 15px; color: #ffe7a8; }
+      .card p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; color: #d9cbf3; }
+      .card code { display: block; font-size: 11.5px; background: rgba(0,0,0,.35); padding: 8px 10px; border-radius: 10px; color: #b9f5d0; overflow-x: auto; white-space: nowrap; }
+      h3 { max-width: 1120px; margin: 0 auto 12px; font-size: 16px; color: #ffe7a8; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; max-width: 1120px; margin: 0 auto; }
+      figure { margin: 0; border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, rgba(120,74,190,.35), rgba(40,16,76,.55)); border: 1.5px solid rgba(255,255,255,.18); box-shadow: 0 14px 30px rgba(10,2,24,.45); }
+      figure img { display: block; width: 100%; height: auto; }
+      figcaption { padding: 10px 12px 12px; font-size: 13px; font-weight: 800; text-align: center; color: #ffe7a8; border-top: 1px solid rgba(255,255,255,.12); }
+    </style>
+  </head>
+  <body>
+    <h1>Детектор внимания — что посмотреть</h1>
+    <p class="sub">
+      Игра теперь на Flutter (<code>flutter_app/</code>) с сервером на FastAPI (<code>server/</code>).
+      Живое превью в браузере — прежний React-прототип из <code>app/</code>:
+      <a href="/">открыть игру</a>. Ниже — карта того, что добавлено, и снимки экранов.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h2>Flutter-приложение</h2>
+        <p>Горизонтальная и вертикальная композиции, пять мини-тестов, призыв, коллекция, магазин, события и профиль. Перед первым запуском создайте каталоги платформ; подробности — в <code style="display:inline;padding:0;background:none">flutter_app/README.md</code>.</p>
+        <code>cd flutter_app &amp;&amp; flutter create --platforms=android,ios . &amp;&amp; flutter pub get</code>
+      </div>
+      <div class="card">
+        <h2>Сервер</h2>
+        <p>Все награды, гаранты, опыт и эволюции считаются на сервере. Здесь же лежат 19 функциональных тестов по ТЗ.</p>
+        <code>cd server &amp;&amp; pytest -q  # 19 passed</code>
+      </div>
+      <div class="card">
+        <h2>Документация</h2>
+        <p>Карта требований ТЗ, параметры для финального баланса и описание API.</p>
+        <code>docs/TZ.md · docs/OPEN_QUESTIONS.md · server/README.md</code>
+      </div>
+    </div>
+
+    <h3>Новые иллюстрации для Flutter и веб-прототипа</h3>
+    <div class="grid" style="margin-bottom: 28px">
+      <figure><img src="/assets/bg/shop_scene.webp" alt="Волшебная лавка на парящем острове" loading="lazy" /><figcaption>Магазин · волшебная лавка</figcaption></figure>
+      <figure><img src="/assets/bg/events_scene.webp" alt="Праздничная площадь с подарками" loading="lazy" /><figcaption>События · праздник на островах</figcaption></figure>
+      <figure><img src="/assets/bg/training_scene.webp" alt="Обсерватория среди облаков" loading="lazy" /><figcaption>Тренировки · обсерватория внимания</figcaption></figure>
+    </div>
+
+    <h3>Экраны веб-прототипа (портретная ориентация)</h3>
+    <div class="grid">
+      <figure><img src="/preview/01-главная.jpg" alt="Главный экран" loading="lazy" /><figcaption>Главная: Мурзик, награды, «Начать»</figcaption></figure>
+      <figure><img src="/preview/02-карта.jpg" alt="Карта уровней" loading="lazy" /><figcaption>Карта уровней: тропа, звёзды, уровни</figcaption></figure>
+      <figure><img src="/preview/03-призыв.jpg" alt="Призыв" loading="lazy" /><figcaption>Призыв: яйцо внимания и гаранты</figcaption></figure>
+      <figure><img src="/preview/04-коллекция.jpg" alt="Коллекция" loading="lazy" /><figcaption>Коллекция: редкости и карточки</figcaption></figure>
+      <figure><img src="/preview/06-искры.jpg" alt="Посчитай искры" loading="lazy" /><figcaption>Мини-игра «Посчитай искры»</figcaption></figure>
+      <figure><img src="/preview/07-серия.jpg" alt="Серия в парах" loading="lazy" /><figcaption>«Найди пару»: бонус за серию</figcaption></figure>
+      <figure><img src="/preview/05-результат.jpg" alt="Результат" loading="lazy" /><figcaption>Результат уровня: звёзды и награды</figcaption></figure>
+      <figure><img src="/preview/08-конец-главы.jpg" alt="Конец главы" loading="lazy" /><figcaption>Конец главы на карте</figcaption></figure>
+    </div>
+  </body>
+</html>

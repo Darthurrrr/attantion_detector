@@ -1,0 +1,374 @@
+:root {
+  --p-950: #1d0838;
+  --p-900: #2a0f4e;
+  --p-800: #3a1a63;
+  --p-700: #4d2384;
+  --p-600: #6833a8;
+  --p-500: #8a4fd0;
+  --p-400: #b07af0;
+  --p-300: #d3b4ff;
+  --gold-1: #fff3a8;
+  --gold-2: #ffd451;
+  --gold-3: #f9a91f;
+  --gold-4: #b96b08;
+  --cream: #fff8e7;
+  --ink: #3a1766;
+  --mint: #7be495;
+  --rose: #ff8fbe;
+  --sky: #7fd8ff;
+  --stage-w: 480px;
+  --radius: 22px;
+  --font: 'Nunito Variable', 'Nunito', 'Trebuchet MS', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --shadow-soft: 0 12px 26px rgba(26, 6, 52, 0.4);
+  --shadow-deep: 0 22px 50px rgba(16, 3, 36, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: #1b0733;
+  color: #fff;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+button {
+  font: inherit;
+  touch-action: manipulation;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #ffe27a;
+  outline-offset: 2px;
+}
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+input,
+select {
+  font: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.app-shell {
+  position: relative;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: #1b0733 url('/assets/bg/cosmic.webp') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.app-shell::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(72, 26, 120, 0.35), rgba(13, 3, 28, 0.88) 70%);
+  backdrop-filter: blur(9px) saturate(1.1);
+}
+
+.app-shell__halo {
+  position: absolute;
+  width: min(760px, 90vw);
+  height: min(760px, 90vw);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 130, 255, 0.35), transparent 62%);
+  filter: blur(16px);
+  pointer-events: none;
+}
+
+.stage {
+  position: relative;
+  width: min(var(--stage-w), 100vw);
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--p-900);
+  color: #fff;
+}
+
+@media (min-width: 640px) {
+  .stage {
+    height: min(930px, 94dvh);
+    border-radius: 34px;
+    box-shadow:
+      0 40px 90px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.14),
+      inset 0 0 0 3px rgba(255, 255, 255, 0.07);
+  }
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: screenFade 0.32s ease both;
+}
+
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.bg-layer--home {
+  background-image: url('/assets/bg/home.webp');
+  background-position: center bottom;
+}
+
+.bg-layer--map {
+  background-image: url('/assets/bg/map.webp');
+  background-position: center top;
+}
+
+.bg-layer--summon {
+  background-image: url('/assets/bg/summon.webp');
+  background-position: center bottom;
+}
+
+.bg-layer--collection {
+  background-image: url('/assets/bg/collection.webp');
+  background-position: center;
+}
+
+.bg-layer--play {
+  background-image: url('/assets/bg/world.webp');
+  background-position: center;
+  filter: saturate(1.05) brightness(0.92);
+}
+
+.scrim-top {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 190px;
+  background: linear-gradient(180deg, rgba(31, 9, 62, 0.55), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scrim-bottom {
+  position: absolute;
+  inset: auto 0 0;
+  height: 240px;
+  background: linear-gradient(0deg, rgba(23, 7, 46, 0.72), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.sparkles i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff6c9;
+  box-shadow: 0 0 10px 3px rgba(255, 239, 160, 0.65);
+  opacity: 0;
+  animation: twinkle 4.5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  45% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  70% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes screenFade {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.6deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(0.6deg);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-120%) rotate(18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(220%) rotate(18deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 214, 100, 0.45);
+  }
+  60% {
+    box-shadow: 0 0 0 14px rgba(255, 214, 100, 0);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes shakeX {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-12vh) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(98vh) rotate(680deg);
+  }
+}
+
+@keyframes floatUpFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -6px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -70px) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

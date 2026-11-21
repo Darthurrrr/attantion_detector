@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'arena/**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    name: Сервер (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Зависимости
+        run: pip install fastapi uvicorn "SQLAlchemy>=2" pydantic "psycopg[binary]" pytest httpx
+      - name: Тесты игровых систем
+        working-directory: server
+        run: python -m pytest -q
+
+  web:
+    name: Веб-прототип (build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Зависимости
+        working-directory: app
+        run: npm ci
+      - name: Сборка
+        working-directory: app
+        run: npm run build
+      - name: Общие иллюстрации синхронизированы
+        run: |
+          for scene in shop events training; do
+            cmp "app/public/assets/bg/${scene}_scene.webp" "flutter_app/assets/bg/${scene}_scene.webp"
+          done
+
+  flutter:
+    name: Клиент (analyze + test)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Зависимости
+        working-directory: flutter_app
+        run: flutter pub get
+
+      # Ошибки анализа попадают в аннотации запуска — их видно в интерфейсе
+      # GitHub и можно прочитать через API.
+      - name: Анализ
+        working-directory: flutter_app
+        run: |
+          set +e
+          flutter analyze --no-pub --no-fatal-infos > /tmp/analyze.txt 2>&1
+          code=$?
+          python3 ../tools/analyze_report.py /tmp/analyze.txt || true
+          tail -n 20 /tmp/analyze.txt
+          exit $code
+
+      - name: Тесты
+        working-directory: flutter_app
+        run: |
+          set +e
+          flutter test --reporter expanded > /tmp/flutter-test.txt 2>&1
+          code=$?
+          cat /tmp/flutter-test.txt
+          if [ "$code" -ne 0 ]; then
+            # Последние строки доступны в аннотациях, даже если загрузка логов недоступна.
+            while IFS= read -r line; do
+              line=${line//'%'/'%25'}
+              line=${line//$'\r'/'%0D'}
+              echo "::error::$line"
+            done < <(tail -n 35 /tmp/flutter-test.txt)
+          fi
+          exit $code
+
+      # Краткий отчёт помогает, если полный лог запуска недоступен.
+      - name: Отчёт Flutter в PR
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -s /tmp/analyze.txt ] && [ ! -s /tmp/flutter-test.txt ]; then exit 0; fi
+          {
+            printf 'Автоматический отчёт Flutter (коммит %s).\n\n' "$GITHUB_SHA"
+            printf 'Анализ — ошибки и предупреждения:\n\n```\n'
+            if [ -s /tmp/analyze.txt ]; then
+              grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
+            else
+              printf 'Анализ не запущен.\n'
+            fi
+            printf '\n```\n\nРезультат тестов:\n\n```\n'
+            if [ ! -s /tmp/flutter-test.txt ]; then
+              printf 'Тесты не запущены.\n'
+            elif grep -q 'Some tests failed' /tmp/flutter-test.txt; then
+              # Показываем источник ошибки, а не только последний stack trace.
+              grep -n -B 1 -A 3 -E 'The relevant error-causing widget was:|The following .* was thrown|A RenderFlex overflowed| \[E\]|^  Actual:|Failing tests:' /tmp/flutter-test.txt | head -n 300 || true
+            else
+              tail -n 3 /tmp/flutter-test.txt
+            fi
+            printf '\n```\n'
+          } > /tmp/comment.md
+          gh pr comment "$NUMBER" --body-file /tmp/comment.md --edit-last --create-if-none

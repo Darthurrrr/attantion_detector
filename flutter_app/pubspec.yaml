@@ -1,0 +1,32 @@
+name: attention_detector
+description: «Детектор внимания» — мобильная игра-тренажёр внимания с питомцами Мурзика.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  shared_preferences: ^2.3.0
+  audioplayers: ^6.0.0
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/bg/
+    - assets/pets/
+    - assets/sounds/
+    - assets/ui/
+    - assets/hero_cat.png
+    - assets/hero_cat_cape.png
+    - assets/hero_cat_armor.png
+    - assets/hero_avatar.png
