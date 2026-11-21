@@ -6,16 +6,23 @@
 
 ## Запуск
 
+В репозитории лежат Dart-код и ресурсы, а каталоги хост-платформ не включены.
+Один раз создайте их установленным Flutter SDK, затем запустите сервер и клиент:
+
 ```bash
 cd flutter_app
+flutter create --platforms=android,ios .  # один раз; iOS-сборка требует macOS и Xcode
 flutter pub get
-# сервер по умолчанию http://127.0.0.1:8000
 flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000   # Android-эмулятор
 flutter run -d ios --dart-define=API_BASE_URL=http://127.0.0.1:8000
 ```
 
-Для эмулятора Android локальный сервер доступен как `10.0.2.2`, для iOS — `127.0.0.1`.
-Ориентация не фиксируется: приложение поддерживает портрет и ландшафт.
+Для эмулятора Android локальный сервер доступен как `10.0.2.2`, для iOS — `127.0.0.1`;
+на реальном устройстве нужен доступный ему адрес сервера. Если используется локальный
+HTTP, для Android отладки добавьте в сгенерированный `android/app/src/debug/AndroidManifest.xml`
+внутри `<manifest>` строку `<application android:usesCleartextTraffic="true" />`.
+Для выпуска используйте HTTPS и разрешение `android.permission.INTERNET` в основном
+манифесте. Ориентация не фиксируется: поддерживаются портрет и ландшафт.
 
 ## Структура
 
@@ -37,8 +44,12 @@ lib/
 ## Проверка
 
 ```bash
-flutter analyze
+flutter analyze --no-fatal-infos
 flutter test
 ```
+
+CI проверяет анализ, тесты клиентских виджетов (включая ориентации и уменьшение
+анимации), серверные тесты и сборку веб-прототипа. Новые фоновые иллюстрации лежат
+в `assets/bg/*_scene.webp`; искры и парящие предметы — в `lib/widgets/ambient_effects.dart`.
 
 Полная карта требований ТЗ — в [`../docs/TZ.md`](../docs/TZ.md).

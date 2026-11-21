@@ -24,6 +24,28 @@ jobs:
         working-directory: server
         run: python -m pytest -q
 
+  web:
+    name: Веб-прототип (build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Зависимости
+        working-directory: app
+        run: npm ci
+      - name: Сборка
+        working-directory: app
+        run: npm run build
+      - name: Общие иллюстрации синхронизированы
+        run: |
+          for scene in shop events training; do
+            cmp "app/public/assets/bg/${scene}_scene.webp" "flutter_app/assets/bg/${scene}_scene.webp"
+          done
+
   flutter:
     name: Клиент (analyze + test)
     runs-on: ubuntu-latest
@@ -84,3 +106,21 @@ jobs:
             done < <(tail -n 35 /tmp/flutter-test.txt)
           fi
           exit $code
+
+      - name: Отчёт тестов в PR
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -s /tmp/flutter-test.txt ]; then exit 0; fi
+          {
+            printf 'Автоматический отчёт Flutter (коммит %s).\n\n' "$GITHUB_SHA"
+            printf 'Анализ — ошибки и предупреждения:\n\n```\n'
+            grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
+            printf '\n```\n\nПоследние строки тестов:\n\n```\n'
+            tail -n 200 /tmp/flutter-test.txt
+            printf '\n```\n'
+          } > /tmp/comment.md
+          gh pr comment "$NUMBER" --body-file /tmp/comment.md --edit-last --create-if-none
