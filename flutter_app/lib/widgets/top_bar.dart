@@ -11,6 +11,7 @@ import '../screens/trainings_screen.dart';
 import '../screens/shop_screen.dart';
 import '../screens/summon_screen.dart';
 import '../theme/app_text.dart';
+import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
 
 /// Верхняя панель в горизонтальной композиции: профиль, кошелёк, навигация.

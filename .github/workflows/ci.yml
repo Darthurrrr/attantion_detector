@@ -61,7 +61,7 @@ jobs:
           if [ ! -s /tmp/analyze.txt ]; then exit 0; fi
           {
             printf 'Автоматический отчёт `flutter analyze` (коммит %s).\n\n```\n' "$GITHUB_SHA"
-            grep -E '^\s*(error|warning|info)\s+•' /tmp/analyze.txt | grep -v 'deprecated_member_use' | head -n 120
+            grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
             printf '\n```\n\nВсего строк: %s; из них ошибок: %s.\n' \
               "$(grep -cE '^\s*(error|warning|info)\s+•' /tmp/analyze.txt || true)" \
               "$(grep -cE '^\s*error\s+•' /tmp/analyze.txt || true)"
@@ -70,4 +70,17 @@ jobs:
 
       - name: Тесты
         working-directory: flutter_app
-        run: flutter test
+        run: |
+          set +e
+          flutter test --reporter expanded > /tmp/flutter-test.txt 2>&1
+          code=$?
+          tail -n 60 /tmp/flutter-test.txt
+          if [ "$code" -ne 0 ]; then
+            # Последние строки доступны в аннотациях, даже если загрузка логов недоступна.
+            while IFS= read -r line; do
+              line=${line//'%'/'%25'}
+              line=${line//$'\r'/'%0D'}
+              echo "::error::$line"
+            done < <(tail -n 35 /tmp/flutter-test.txt)
+          fi
+          exit $code
