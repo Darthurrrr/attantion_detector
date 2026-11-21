@@ -226,3 +226,21 @@ app/dist/
 .DS_Store
 app/tsconfig.tsbuildinfo
 app/*.tsbuildinfo
+
+# скриншоты для предпросмотра
+app/preview/
+
+# Flutter / Dart
+flutter_app/.dart_tool/
+flutter_app/build/
+flutter_app/.flutter-plugins
+flutter_app/.flutter-plugins-dependencies
+flutter_app/*.iml
+.flutter-plugins
+
+# Python
+server/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db

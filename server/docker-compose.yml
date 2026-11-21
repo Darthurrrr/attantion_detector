@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: attention
+      POSTGRES_PASSWORD: attention
+      POSTGRES_DB: attention
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://attention:attention@db:5432/attention
+      ADMIN_SECRET: change-me-in-production
+    ports: ["8000:8000"]
+    depends_on: [db]
+volumes:
+  pgdata:

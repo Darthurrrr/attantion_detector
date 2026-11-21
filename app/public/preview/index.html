@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Детектор внимания — экраны игры</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 28px 20px 48px;
+        font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        background:
+          radial-gradient(90% 60% at 50% 0%, #3a1a63 0%, #1b0733 62%, #120525 100%);
+        color: #fff;
+      }
+      h1 {
+        margin: 0 0 6px;
+        text-align: center;
+        font-size: clamp(20px, 4vw, 30px);
+        letter-spacing: 0.2px;
+      }
+      p.sub {
+        margin: 0 auto 26px;
+        max-width: 620px;
+        text-align: center;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #cdb9ee;
+      }
+      p.sub a { color: #ffd76a; text-decoration: none; border-bottom: 1px solid rgba(255, 215, 106, 0.45); }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 18px;
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+      figure {
+        margin: 0;
+        border-radius: 20px;
+        overflow: hidden;
+        background: linear-gradient(180deg, rgba(120, 74, 190, 0.35), rgba(40, 16, 76, 0.55));
+        border: 1.5px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 14px 30px rgba(10, 2, 24, 0.45);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      figure:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(10, 2, 24, 0.55); }
+      figure img { display: block; width: 100%; height: auto; }
+      figcaption {
+        padding: 10px 12px 12px;
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+        color: #ffe7a8;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Детектор внимания — экраны игры</h1>
+    <p class="sub">
+      Живая версия игры — на <a href="/">главной странице превью</a>. Ниже снимки основных экранов
+      с телефона (390×844).
+    </p>
+    <div class="grid">
+      <figure><img src="01-главная.jpg" alt="Главный экран" loading="lazy" /><figcaption>Главная: Мурзик, награды, «Начать»</figcaption></figure>
+      <figure><img src="02-карта.jpg" alt="Карта уровней" loading="lazy" /><figcaption>Карта уровней: тропа, звёзды, уровни</figcaption></figure>
+      <figure><img src="03-призыв.jpg" alt="Призыв" loading="lazy" /><figcaption>Призыв: яйцо внимания и гаранты</figcaption></figure>
+      <figure><img src="04-коллекция.jpg" alt="Коллекция" loading="lazy" /><figcaption>Коллекция: редкости и карточки</figcaption></figure>
+      <figure><img src="06-искры.jpg" alt="Мини-игра Посчитай искры" loading="lazy" /><figcaption>Мини-игра «Посчитай искры»</figcaption></figure>
+      <figure><img src="07-серия.jpg" alt="Серия в парах" loading="lazy" /><figcaption>«Найди пару»: бонус за серию</figcaption></figure>
+      <figure><img src="05-результат.jpg" alt="Экран результата" loading="lazy" /><figcaption>Результат уровня: звёзды и награды</figcaption></figure>
+      <figure><img src="08-конец-главы.jpg" alt="Конец главы" loading="lazy" /><figcaption>Конец главы на карте</figcaption></figure>
+    </div>
+  </body>
+</html>
