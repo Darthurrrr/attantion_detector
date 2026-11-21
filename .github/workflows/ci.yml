@@ -10,8 +10,8 @@ jobs:
     name: Сервер (pytest)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Зависимости
@@ -24,7 +24,7 @@ jobs:
     name: Клиент (analyze + test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -32,9 +32,36 @@ jobs:
       - name: Зависимости
         working-directory: flutter_app
         run: flutter pub get
+
       - name: Анализ
+        id: analyze
         working-directory: flutter_app
-        run: flutter analyze
+        run: |
+          set +e
+          flutter analyze --no-pub > /tmp/analyze.txt 2>&1
+          code=$?
+          tail -c 60000 /tmp/analyze.txt
+          {
+            echo 'REPORT<<EOF_REPORT'
+            echo 'flutter analyze:'
+            cat /tmp/analyze.txt
+            echo 'EOF_REPORT'
+          } >> "$GITHUB_OUTPUT"
+          exit $code
+
       - name: Тесты
         working-directory: flutter_app
         run: flutter test
+
+      # Отчёт анализа складывается в комментарий к PR, чтобы его можно было
+      # прочитать без доступа к скачиванию логов.
+      - name: Отчёт анализа в PR
+        if: failure() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          REPORT: ${{ steps.analyze.outputs.REPORT }}
+        run: |
+          body=$(printf '%s\n\n```\n%s\n```' "Автоматический отчёт CI по ветке \`$GITHUB_HEAD_REF\` (коммит $GITHUB_SHA)." "$REPORT")
+          printf '%s' "$body" > /tmp/comment.md
+          gh pr comment "$NUMBER" --body-file /tmp/comment.md
