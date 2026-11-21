@@ -5,6 +5,10 @@ on:
     branches: [main, 'arena/**']
   pull_request:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   server:
     name: Сервер (pytest)
@@ -33,35 +37,37 @@ jobs:
         working-directory: flutter_app
         run: flutter pub get
 
+      # Ошибки анализа попадают в аннотации запуска — их видно в интерфейсе
+      # GitHub и можно прочитать через API.
       - name: Анализ
-        id: analyze
         working-directory: flutter_app
         run: |
           set +e
           flutter analyze --no-pub > /tmp/analyze.txt 2>&1
           code=$?
-          tail -c 60000 /tmp/analyze.txt
-          {
-            echo 'REPORT<<EOF_REPORT'
-            echo 'flutter analyze:'
-            cat /tmp/analyze.txt
-            echo 'EOF_REPORT'
-          } >> "$GITHUB_OUTPUT"
+          python3 - <<'PY'
+          import re, pathlib
+          lines = pathlib.Path('/tmp/analyze.txt').read_text(errors='replace').splitlines()
+          pat = re.compile(r'^\s*(error|warning|info)\s+•\s+(.*?)\s+•\s+(.+?):(\d+):(\d+)\s+•\s+(\S+)\s*$')
+          shown = 0
+          for line in lines:
+            m = pat.match(line)
+            if not m:
+                continue
+            level, msg, path, row, col, rule = m.groups()
+            kind = 'error' if level == 'error' else 'warning'
+            print(f'::{kind} file={path},line={row},col={col}::{msg} ({rule})')
+            shown += 1
+            if shown >= 40:
+                break
+          if shown == 0:
+              text = ' '.join(lines)[-1200:] or 'нет вывода'
+              print(f'::error::flutter analyze не дал разбираемых строк: {text}')
+          print(f'::notice::строк с замечаниями: {shown}')
+          PY
+          tail -n 40 /tmp/analyze.txt
           exit $code
 
       - name: Тесты
         working-directory: flutter_app
         run: flutter test
-
-      # Отчёт анализа складывается в комментарий к PR, чтобы его можно было
-      # прочитать без доступа к скачиванию логов.
-      - name: Отчёт анализа в PR
-        if: failure() && github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBER: ${{ github.event.pull_request.number }}
-          REPORT: ${{ steps.analyze.outputs.REPORT }}
-        run: |
-          body=$(printf '%s\n\n```\n%s\n```' "Автоматический отчёт CI по ветке \`$GITHUB_HEAD_REF\` (коммит $GITHUB_SHA)." "$REPORT")
-          printf '%s' "$body" > /tmp/comment.md
-          gh pr comment "$NUMBER" --body-file /tmp/comment.md
