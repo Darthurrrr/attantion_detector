@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'arena/**']
+  pull_request:
+
+jobs:
+  server:
+    name: Сервер (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Зависимости
+        run: pip install fastapi uvicorn "SQLAlchemy>=2" pydantic "psycopg[binary]" pytest httpx
+      - name: Тесты игровых систем
+        working-directory: server
+        run: python -m pytest -q
+
+  flutter:
+    name: Клиент (analyze + test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Зависимости
+        working-directory: flutter_app
+        run: flutter pub get
+      - name: Анализ
+        working-directory: flutter_app
+        run: flutter analyze
+      - name: Тесты
+        working-directory: flutter_app
+        run: flutter test
