@@ -50,11 +50,21 @@ class _TrainingsScreenState extends State<TrainingsScreen> {
                     GameTopBar(current: 'map', compact: portrait),
                     Expanded(
                       child: portrait
-                          ? Column(
-                              children: [
-                                Expanded(child: _ChapterMap(cfg: cfg, selected: selected, onSelect: _select, played: played)),
-                                _LevelCard(level: selected, palette: palette, onPlay: () => _play(selected)),
-                              ],
+                          ? LayoutBuilder(
+                              builder: (context, constraints) => ListView(
+                                key: const ValueKey('training-content'),
+                                padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
+                                children: [
+                                  // На маленьком телефоне карта не сжимается до обрезанных карточек;
+                                  // карточка уровня ниже остаётся доступна прокруткой.
+                                  SizedBox(
+                                    height: (constraints.maxHeight * 0.45).clamp(260.0, 400.0).toDouble(),
+                                    child: _ChapterMap(cfg: cfg, selected: selected, onSelect: _select, played: played),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _LevelCard(level: selected, palette: palette, onPlay: () => _play(selected)),
+                                ],
+                              ),
                             )
                           : Padding(
                               padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
@@ -123,12 +133,19 @@ class _ChapterMap extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 8),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Icon(Icons.map_rounded, size: 18, color: Colors.white),
                 const SizedBox(width: 6),
-                Text('Глава 1 · Мир внимания', style: AppText.h2),
-                const Spacer(),
-                Text('Тренировок сегодня: $played', style: AppText.tiny),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Глава 1 · Мир внимания', style: AppText.h2, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      Text('Тренировок сегодня: $played', style: AppText.tiny, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -338,10 +355,11 @@ class _LevelCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Row(
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
             children: [
               _MetaChip(icon: Icons.speed_rounded, label: 'Опыт: ${level.xpLabel}'),
-              const SizedBox(width: 6),
               _MetaChip(icon: Icons.timer_rounded, label: _duration(level)),
             ],
           ),

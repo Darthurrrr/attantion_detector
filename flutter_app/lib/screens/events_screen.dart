@@ -36,21 +36,26 @@ class EventsScreen extends StatelessWidget {
                     GameTopBar(current: 'events', compact: portrait),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
-                      child: Row(
-                        children: [
-                          Text('События и задания', style: AppText.h1),
-                          const Spacer(),
-                          if (state.dailyCanClaim)
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: Palette.mint.withOpacity(0.25),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Palette.mint),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          spacing: 10,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text('События и задания', style: AppText.h1, maxLines: 2, overflow: TextOverflow.ellipsis),
+                            if (state.dailyCanClaim)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: Palette.mint.withOpacity(0.25),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Palette.mint),
+                                ),
+                                child: const Text('Есть награда', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Palette.mint)),
                               ),
-                              child: Text('Есть награда', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Palette.mint)),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     Expanded(
@@ -58,6 +63,7 @@ class EventsScreen extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(14, 4, 14, 10),
                         child: portrait
                             ? ListView(
+                                key: const ValueKey('events-content'),
                                 children: [
                                   _DailyCard(state: state, cfg: cfg, controller: controller),
                                   const SizedBox(height: 10),

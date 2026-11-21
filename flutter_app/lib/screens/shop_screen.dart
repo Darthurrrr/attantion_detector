@@ -53,14 +53,10 @@ class _ShopScreenState extends State<ShopScreen> {
                     GameTopBar(current: 'shop', compact: portrait),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
-                      child: Row(
-                        children: [
-                          Text('Магазин', style: AppText.h1),
-                          const SizedBox(width: 10),
-                          CurrencyPill(icon: const CoinIcon(size: 14), value: '${state.coins}', color: Palette.gold, compact: true),
-                          const SizedBox(width: 6),
-                          CurrencyPill(icon: GemIcon(size: 14), value: '${state.gems}', color: Palette.sky, compact: true),
-                        ],
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        // Баланс уже виден в верхней панели: не дублируем его в заголовке.
+                        child: Text('Магазин', style: AppText.h1),
                       ),
                     ),
                     SizedBox(
@@ -340,6 +336,7 @@ class _EggShop extends StatelessWidget {
       builder: (context, constraints) {
         if (constraints.maxWidth < 520) {
           return ListView(
+            key: const ValueKey('egg-shop-content'),
             children: [
               SizedBox(height: 230, child: showcase),
               const SizedBox(height: 10),
