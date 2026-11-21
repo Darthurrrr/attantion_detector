@@ -275,6 +275,50 @@ def test_admin_requires_rights(player):
     assert client.post("/api/admin/wallet", json={"gems": 999}, headers=headers).status_code == 200
 
 
+def test_equipment_respects_layers_and_themes_are_independent(player):
+    headers = economy(player, coins=6000, gems=400)
+    # Косметика надевается и снимается, второй эффект того же слоя запрещён.
+    client.post("/api/admin/item", json={"itemId": "cosmo_bubbles"}, headers=headers)
+    client.post("/api/admin/item", json={"itemId": "cosmo_sparks"}, headers=headers)
+    eq = client.post("/api/inventory/equip?equipped=true", json={"itemId": "cosmo_bubbles"}, headers=headers)
+    assert eq.status_code == 200, eq.text
+    assert "cosmo_bubbles" in eq.json()["equipped"]
+    off = client.post("/api/inventory/equip?equipped=false", json={"itemId": "cosmo_bubbles"}, headers=headers)
+    assert off.status_code == 200
+    assert "cosmo_bubbles" not in off.json()["equipped"]
+    # Темы мира и интерфейса независимы и сохраняются.
+    client.post("/api/admin/item", json={"itemId": "world_cosmos"}, headers=headers)
+    client.post("/api/admin/item", json={"itemId": "ui_gold"}, headers=headers)
+    world = client.post("/api/inventory/equip?equipped=true", json={"itemId": "world_cosmos"}, headers=headers)
+    assert world.status_code == 200
+    ui = client.post("/api/inventory/equip?equipped=true", json={"itemId": "ui_gold"}, headers=headers)
+    assert ui.status_code == 200
+    state = client.get("/api/state", headers=headers).json()
+    assert state["themes"] == {"world": "world_cosmos", "ui": "ui_gold"}
+
+
+def test_equip_requires_ownership(player):
+    headers = auth(player)
+    res = client.post("/api/inventory/equip?equipped=true", json={"itemId": "cosmo_halo"}, headers=headers)
+    assert res.status_code == 400
+    assert res.json()["detail"] == "not_owned"
+
+
+def test_wallet_cannot_go_negative_via_admin(player):
+    headers = economy(player, coins=0)
+    res = client.post("/api/admin/wallet", json={"coins": -999999}, headers=headers)
+    assert res.status_code == 400
+    assert res.json()["detail"] == "insufficient_funds"
+
+
+def test_transactions_log_admin_actions(player):
+    headers = economy(player, gems=120)
+    res = client.get("/api/transactions", headers=headers)
+    assert res.status_code == 200
+    kinds = [row["kind"] for row in res.json()["transactions"]]
+    assert "admin" in kinds
+
+
 def test_config_exposes_rules(player):
     cfg = client.get("/api/config").json()
     assert cfg["rules"]["eggPrice"] == 60
