@@ -45,27 +45,8 @@ jobs:
           set +e
           flutter analyze --no-pub > /tmp/analyze.txt 2>&1
           code=$?
-          python3 - <<'PY'
-          import re, pathlib
-          lines = pathlib.Path('/tmp/analyze.txt').read_text(errors='replace').splitlines()
-          pat = re.compile(r'^\s*(error|warning|info)\s+•\s+(.*?)\s+•\s+(.+?):(\d+):(\d+)\s+•\s+(\S+)\s*$')
-          shown = 0
-          for line in lines:
-            m = pat.match(line)
-            if not m:
-                continue
-            level, msg, path, row, col, rule = m.groups()
-            kind = 'error' if level == 'error' else 'warning'
-            print(f'::{kind} file={path},line={row},col={col}::{msg} ({rule})')
-            shown += 1
-            if shown >= 40:
-                break
-          if shown == 0:
-              text = ' '.join(lines)[-1200:] or 'нет вывода'
-              print(f'::error::flutter analyze не дал разбираемых строк: {text}')
-          print(f'::notice::строк с замечаниями: {shown}')
-          PY
-          tail -n 40 /tmp/analyze.txt
+          python3 tools/analyze_report.py /tmp/analyze.txt || true
+          tail -n 20 /tmp/analyze.txt
           exit $code
 
       - name: Тесты
