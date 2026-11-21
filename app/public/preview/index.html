@@ -3,76 +3,67 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Детектор внимания — экраны игры</title>
+    <title>Детектор внимания — сборка и экраны</title>
     <style>
       :root { color-scheme: dark; }
       * { box-sizing: border-box; }
       body {
-        margin: 0;
-        padding: 28px 20px 48px;
+        margin: 0; padding: 26px 20px 56px;
         font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
-        background:
-          radial-gradient(90% 60% at 50% 0%, #3a1a63 0%, #1b0733 62%, #120525 100%);
+        background: radial-gradient(90% 60% at 50% 0%, #3a1a63 0%, #1b0733 62%, #120525 100%);
         color: #fff;
       }
-      h1 {
-        margin: 0 0 6px;
-        text-align: center;
-        font-size: clamp(20px, 4vw, 30px);
-        letter-spacing: 0.2px;
-      }
-      p.sub {
-        margin: 0 auto 26px;
-        max-width: 620px;
-        text-align: center;
-        font-size: 14px;
-        line-height: 1.5;
-        color: #cdb9ee;
-      }
-      p.sub a { color: #ffd76a; text-decoration: none; border-bottom: 1px solid rgba(255, 215, 106, 0.45); }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 18px;
-        max-width: 1180px;
-        margin: 0 auto;
-      }
-      figure {
-        margin: 0;
-        border-radius: 20px;
-        overflow: hidden;
-        background: linear-gradient(180deg, rgba(120, 74, 190, 0.35), rgba(40, 16, 76, 0.55));
-        border: 1.5px solid rgba(255, 255, 255, 0.18);
-        box-shadow: 0 14px 30px rgba(10, 2, 24, 0.45);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      figure:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(10, 2, 24, 0.55); }
+      h1 { margin: 0 0 4px; text-align: center; font-size: clamp(20px, 4vw, 30px); }
+      p.sub { margin: 0 auto 22px; max-width: 700px; text-align: center; font-size: 14px; line-height: 1.55; color: #cdb9ee; }
+      p.sub a { color: #ffd76a; text-decoration: none; border-bottom: 1px solid rgba(255,215,106,.45); }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; max-width: 1120px; margin: 0 auto 26px; }
+      .card { border-radius: 18px; padding: 16px; background: linear-gradient(180deg, rgba(120,74,190,.30), rgba(40,16,76,.55)); border: 1.5px solid rgba(255,255,255,.18); }
+      .card h2 { margin: 0 0 6px; font-size: 15px; color: #ffe7a8; }
+      .card p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; color: #d9cbf3; }
+      .card code { display: block; font-size: 11.5px; background: rgba(0,0,0,.35); padding: 8px 10px; border-radius: 10px; color: #b9f5d0; overflow-x: auto; white-space: nowrap; }
+      h3 { max-width: 1120px; margin: 0 auto 12px; font-size: 16px; color: #ffe7a8; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; max-width: 1120px; margin: 0 auto; }
+      figure { margin: 0; border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, rgba(120,74,190,.35), rgba(40,16,76,.55)); border: 1.5px solid rgba(255,255,255,.18); box-shadow: 0 14px 30px rgba(10,2,24,.45); }
       figure img { display: block; width: 100%; height: auto; }
-      figcaption {
-        padding: 10px 12px 12px;
-        font-size: 13px;
-        font-weight: 800;
-        text-align: center;
-        color: #ffe7a8;
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
-      }
+      figcaption { padding: 10px 12px 12px; font-size: 13px; font-weight: 800; text-align: center; color: #ffe7a8; border-top: 1px solid rgba(255,255,255,.12); }
     </style>
   </head>
   <body>
-    <h1>Детектор внимания — экраны игры</h1>
+    <h1>Детектор внимания — что посмотреть</h1>
     <p class="sub">
-      Живая версия игры — на <a href="/">главной странице превью</a>. Ниже снимки основных экранов
-      с телефона (390×844).
+      Игра теперь на Flutter (<code>flutter_app/</code>) с сервером на FastAPI (<code>server/</code>).
+      Веб-версия в этом превью — прежний React-прототип из <code>app/</code>:
+      <a href="/">открыть живую игру</a>.
     </p>
+
+    <div class="cards">
+      <div class="card">
+        <h2>Flutter-приложение</h2>
+        <p>Горизонтальная и вертикальная композиции, пять мини-тестов, призыв со сценой открытия яйца, коллекция, магазин, инвентарь, события, профиль и админ-режим.</p>
+        <code>cd flutter_app &amp;&amp; flutter pub get &amp;&amp; flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000</code>
+      </div>
+      <div class="card">
+        <h2>Сервер</h2>
+        <p>Все награды, гаранты, опыт и эволюции считаются на сервере. Здесь же лежат 15 функциональных тестов по ТЗ.</p>
+        <code>cd server &amp;&amp; pytest -q  # 15 passed</code>
+      </div>
+      <div class="card">
+        <h2>Документация</h2>
+        <p>Карта требований ТЗ, параметры для финального баланса и описание API.</p>
+        <code>docs/TZ.md · docs/OPEN_QUESTIONS.md · server/README.md</code>
+      </div>
+    </div>
+
+    <h3>Экраны веб-прототипа (портретная ориентация)</h3>
     <div class="grid">
-      <figure><img src="01-главная.jpg" alt="Главный экран" loading="lazy" /><figcaption>Главная: Мурзик, награды, «Начать»</figcaption></figure>
-      <figure><img src="02-карта.jpg" alt="Карта уровней" loading="lazy" /><figcaption>Карта уровней: тропа, звёзды, уровни</figcaption></figure>
-      <figure><img src="03-призыв.jpg" alt="Призыв" loading="lazy" /><figcaption>Призыв: яйцо внимания и гаранты</figcaption></figure>
-      <figure><img src="04-коллекция.jpg" alt="Коллекция" loading="lazy" /><figcaption>Коллекция: редкости и карточки</figcaption></figure>
-      <figure><img src="06-искры.jpg" alt="Мини-игра Посчитай искры" loading="lazy" /><figcaption>Мини-игра «Посчитай искры»</figcaption></figure>
-      <figure><img src="07-серия.jpg" alt="Серия в парах" loading="lazy" /><figcaption>«Найди пару»: бонус за серию</figcaption></figure>
-      <figure><img src="05-результат.jpg" alt="Экран результата" loading="lazy" /><figcaption>Результат уровня: звёзды и награды</figcaption></figure>
-      <figure><img src="08-конец-главы.jpg" alt="Конец главы" loading="lazy" /><figcaption>Конец главы на карте</figcaption></figure>
+      <figure><img src="/preview/01-главная.jpg" alt="Главный экран" loading="lazy" /><figcaption>Главная: Мурзик, награды, «Начать»</figcaption></figure>
+      <figure><img src="/preview/02-карта.jpg" alt="Карта уровней" loading="lazy" /><figcaption>Карта уровней: тропа, звёзды, уровни</figcaption></figure>
+      <figure><img src="/preview/03-призыв.jpg" alt="Призыв" loading="lazy" /><figcaption>Призыв: яйцо внимания и гаранты</figcaption></figure>
+      <figure><img src="/preview/04-коллекция.jpg" alt="Коллекция" loading="lazy" /><figcaption>Коллекция: редкости и карточки</figcaption></figure>
+      <figure><img src="/preview/06-искры.jpg" alt="Посчитай искры" loading="lazy" /><figcaption>Мини-игра «Посчитай искры»</figcaption></figure>
+      <figure><img src="/preview/07-серия.jpg" alt="Серия в парах" loading="lazy" /><figcaption>«Найди пару»: бонус за серию</figcaption></figure>
+      <figure><img src="/preview/05-результат.jpg" alt="Результат" loading="lazy" /><figcaption>Результат уровня: звёзды и награды</figcaption></figure>
+      <figure><img src="/preview/08-конец-главы.jpg" alt="Конец главы" loading="lazy" /><figcaption>Конец главы на карте</figcaption></figure>
     </div>
   </body>
 </html>
