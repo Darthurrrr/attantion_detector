@@ -136,7 +136,6 @@ class _SimonGameState extends State<SimonGame> {
 
   @override
   Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<GamePaletteExt>()?.palette ?? Palette.violetTheme;
     final status = _showing
         ? 'Смотрите и запоминайте'
         : _accepting

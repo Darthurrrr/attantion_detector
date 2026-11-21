@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../app/game_app.dart';
 import '../theme/app_text.dart';
-import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
 import '../widgets/top_bar.dart';
 

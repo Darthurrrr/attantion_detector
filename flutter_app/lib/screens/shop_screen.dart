@@ -35,7 +35,6 @@ class _ShopScreenState extends State<ShopScreen> {
     if (state == null || cfg == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final palette = paletteOf(context);
     final maxEggs = state.gems ~/ cfg.eggPrice;
 
     return Scaffold(

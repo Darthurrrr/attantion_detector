@@ -26,7 +26,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
     if (state == null || cfg == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final palette = paletteOf(context);
     final owned = {for (final pet in state.pets) pet.petId};
     final catalog = cfg.pets;
     final selectedId = _selected ?? state.activePetId;

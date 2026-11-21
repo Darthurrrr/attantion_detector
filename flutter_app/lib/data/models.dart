@@ -353,7 +353,7 @@ class GameState {
       eventClaims: events.map(
         (k, v) => MapEntry(
           k,
-          Map<String, bool>.from(v as Map).map((sk, sv) => MapEntry(sk, sv as bool)),
+          Map<String, bool>.from(v as Map),
         ),
       ),
       sound: settings['sound'] as bool? ?? true,

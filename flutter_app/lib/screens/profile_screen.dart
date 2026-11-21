@@ -38,7 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (state == null || cfg == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final palette = paletteOf(context);
     final totalPets = cfg.pets.length;
 
     return Scaffold(

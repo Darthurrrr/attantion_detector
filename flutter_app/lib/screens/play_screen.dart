@@ -426,7 +426,7 @@ class _ResultCard extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          if (petBlock != null)
+                          if (pet != null && petBlock != null)
                             Row(
                               children: [
                                 petBlock,

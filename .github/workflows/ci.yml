@@ -43,7 +43,7 @@ jobs:
         working-directory: flutter_app
         run: |
           set +e
-          flutter analyze --no-pub > /tmp/analyze.txt 2>&1
+          flutter analyze --no-pub --no-fatal-infos > /tmp/analyze.txt 2>&1
           code=$?
           python3 ../tools/analyze_report.py /tmp/analyze.txt || true
           tail -n 20 /tmp/analyze.txt

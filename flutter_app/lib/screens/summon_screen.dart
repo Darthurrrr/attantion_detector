@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app/game_app.dart';
 import '../data/models.dart';
+import '../state/game_controller.dart';
 import '../games/egg_reveal.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';

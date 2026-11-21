@@ -22,7 +22,6 @@ class InventoryScreen extends StatelessWidget {
     if (state == null || cfg == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final palette = paletteOf(context);
     final ownedItems = cfg.shop.where((item) => state.items.contains(item.id)).toList();
     final cosmetics = ownedItems.where((i) => i.kind == 'cosmetic').toList();
     final worlds = ownedItems.where((i) => i.kind == 'world').toList();
@@ -241,7 +240,6 @@ class _EggRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = paletteOf(context);
     return GamePanel(
       padding: const EdgeInsets.all(12),
       child: Row(

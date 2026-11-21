@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../app/game_app.dart';
 import '../data/models.dart';
+import '../state/game_controller.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
@@ -135,7 +136,7 @@ class PetStage extends StatefulWidget {
   State<PetStage> createState() => _PetStageState();
 }
 
-class _PetStageState extends State<PetStage> with SingleTickerProviderStateMixin {
+class _PetStageState extends State<PetStage> with TickerProviderStateMixin {
   late final AnimationController _idle = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2600),
@@ -180,7 +181,7 @@ class _PetStageState extends State<PetStage> with SingleTickerProviderStateMixin
           await controller.audio.cuddleSound();
           controller.showToast('Мурзик мурчит от удовольствия', tone: ToastTone.good);
         }
-        setState(() => _stroke = 0);
+        if (mounted) setState(() => _stroke = 0);
       },
       child: Stack(
         alignment: Alignment.center,
@@ -357,7 +358,7 @@ class _MenuGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = paletteOf(context);
-    final entries = <(_MenuEntry)>[
+    final entries = <_MenuEntry>[
       _MenuEntry('Магазин', Icons.storefront_rounded, const Color(0xFFFFC46B), () => const ShopScreen()),
       _MenuEntry('События', Icons.event_available_rounded, Palette.rose, () => const EventsScreen()),
       _MenuEntry('Инвентарь', Icons.backpack_rounded, Palette.mint, () => const InventoryScreen()),

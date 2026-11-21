@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../app/game_app.dart';
-import '../state/game_controller.dart';
 import '../widgets/game_ui.dart';
 
 /// Слой всплывающих уведомлений поверх текущего экрана.

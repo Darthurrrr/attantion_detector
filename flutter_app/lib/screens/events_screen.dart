@@ -20,7 +20,6 @@ class EventsScreen extends StatelessWidget {
     if (state == null || cfg == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final palette = paletteOf(context);
 
     return Scaffold(
       body: Stack(
