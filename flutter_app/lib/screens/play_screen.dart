@@ -345,9 +345,10 @@ class _ResultCard extends StatelessWidget {
                                 Image.asset(pet.asset, height: portrait ? 78 : 110, fit: BoxFit.contain),
                                 Text(pet.name, style: AppText.small, textAlign: TextAlign.center),
                                 const SizedBox(height: 2),
-                                Text('+${reward?.xp ?? 20} XP',
-                                    style: const TextStyle(
-                                        fontSize: 11, color: Palette.gold, fontWeight: FontWeight.w900)),
+                                if (reward != null)
+                                  Text('+${reward!.xp} XP',
+                                      style: const TextStyle(
+                                          fontSize: 11, color: Palette.gold, fontWeight: FontWeight.w900)),
                               ],
                             ),
                           );
@@ -359,7 +360,7 @@ class _ResultCard extends StatelessWidget {
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              StarRow(stars: outcome.stars, size: 30),
+                              StarRow(stars: outcome.stars, size: 30, animate: true),
                               const SizedBox(width: 10),
                               Text('${outcome.score} / 100',
                                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white)),

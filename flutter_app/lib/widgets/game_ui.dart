@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../state/game_controller.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
+import 'ambient_effects.dart';
 
 /// Главная «игровая» кнопка с бликом и лёгким нажатием.
 class GameButton extends StatefulWidget {
@@ -374,20 +375,31 @@ class RarityBadge extends StatelessWidget {
 
 /// Звёзды результата (своя отрисовка, без эмодзи-глифов).
 class StarRow extends StatelessWidget {
-  const StarRow({super.key, required this.stars, this.size = 22, this.max = 3});
+  const StarRow({super.key, required this.stars, this.size = 22, this.max = 3, this.animate = false});
 
   final int stars;
   final double size;
   final int max;
+  final bool animate;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(max, (i) {
+        final star = StarShape(filled: i < stars, size: size);
+        final showAnimation = animate && i < stars && !MediaQuery.of(context).disableAnimations;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.5),
-          child: StarShape(filled: i < stars, size: size),
+          child: showAnimation
+              ? TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.25, end: 1),
+                  duration: Duration(milliseconds: 320 + i * 150),
+                  curve: Curves.easeOutBack,
+                  builder: (context, value, child) => Transform.scale(scale: value, child: child),
+                  child: star,
+                )
+              : star,
         );
       }),
     );
@@ -631,11 +643,18 @@ class EggIcon extends StatelessWidget {
 
 /// Фон игровой сцены: изображение мира без растяжения + мягкая виньетка.
 class SceneBackground extends StatelessWidget {
-  const SceneBackground({super.key, required this.asset, this.blur = 0, this.veil = 0.35});
+  const SceneBackground({
+    super.key,
+    required this.asset,
+    this.blur = 0,
+    this.veil = 0.35,
+    this.sparkles = false,
+  });
 
   final String asset;
   final double blur;
   final double veil;
+  final bool sparkles;
 
   @override
   Widget build(BuildContext context) {
@@ -662,6 +681,7 @@ class SceneBackground extends StatelessWidget {
             ),
           ),
         ),
+        if (sparkles) const AmbientSparkles(),
       ],
     );
   }

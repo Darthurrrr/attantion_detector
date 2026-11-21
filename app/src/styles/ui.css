@@ -777,3 +777,99 @@
     padding: 0 7px;
   }
 }
+
+/* Иллюстрированные сценки в окнах: содержимое и кнопки остаются поверх фона. */
+.scene-banner {
+  position: relative;
+  height: clamp(105px, 17vh, 142px);
+  margin: 0 0 13px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 17px;
+  border: 1.5px solid rgba(255, 237, 177, 0.7);
+  box-shadow: 0 5px 14px rgba(14, 3, 30, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.scene-banner__picture,
+.scene-banner__veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scene-banner__picture {
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.04);
+  animation: scene-drift 12s ease-in-out infinite alternate;
+}
+
+.scene-banner--shop .scene-banner__picture {
+  background-position: 25% center;
+}
+
+.scene-banner__veil {
+  background: linear-gradient(90deg, rgba(33, 12, 59, 0.82), rgba(33, 12, 59, 0.32) 52%, transparent 78%),
+    linear-gradient(0deg, rgba(29, 10, 52, 0.35), transparent 75%);
+}
+
+.scene-banner__copy {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 68%;
+  text-align: left;
+  text-shadow: 0 2px 5px rgba(22, 4, 39, 0.85);
+}
+
+.scene-banner__copy span {
+  color: #ffdf85;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.scene-banner__copy b {
+  color: #fff8e8;
+  font-size: 13px;
+  line-height: 1.18;
+}
+
+.scene-banner__art {
+  position: absolute;
+  right: 12px;
+  bottom: 5px;
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 5px rgba(28, 8, 46, 0.4));
+  animation: banner-float 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.scene-banner__spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff7cf;
+  box-shadow: 0 0 9px 3px rgba(255, 225, 134, 0.7);
+  animation: twinkle 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.scene-banner__spark--one { top: 23%; right: 23%; }
+.scene-banner__spark--two { top: 48%; right: 9%; animation-delay: -1.6s; }
+
+@keyframes banner-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+@keyframes scene-drift {
+  from { transform: scale(1.04) translateX(-0.6%); }
+  to { transform: scale(1.08) translateX(0.6%); }
+}

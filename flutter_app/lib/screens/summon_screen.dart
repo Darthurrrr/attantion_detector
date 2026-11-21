@@ -23,10 +23,20 @@ class _SummonScreenState extends State<SummonScreen> with SingleTickerProviderSt
   late final AnimationController _float = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 4),
-  )..repeat(reverse: true);
+  );
   bool _busy = false;
   String? _filter;
   bool _historyHintShown = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.of(context).disableAnimations) {
+      _float.stop();
+    } else if (!_float.isAnimating) {
+      _float.repeat(reverse: true);
+    }
+  }
 
   @override
   void dispose() {
@@ -83,7 +93,7 @@ class _SummonScreenState extends State<SummonScreen> with SingleTickerProviderSt
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const SceneBackground(asset: 'assets/bg/summon.webp', veil: 0.3, blur: 1),
+          const SceneBackground(asset: 'assets/bg/summon.webp', veil: 0.3, blur: 1, sparkles: true),
           SafeArea(
             child: OrientationBuilder(
               builder: (context, orientation) {

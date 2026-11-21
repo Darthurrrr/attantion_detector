@@ -40,7 +40,7 @@ class _TrainingsScreenState extends State<TrainingsScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const SceneBackground(asset: 'assets/bg/map.webp', veil: 0.42),
+          const SceneBackground(asset: 'assets/bg/training_scene.webp', veil: 0.36, sparkles: true),
           SafeArea(
             child: OrientationBuilder(
               builder: (context, orientation) {
@@ -67,7 +67,11 @@ class _TrainingsScreenState extends State<TrainingsScreen> {
                                     width: 330,
                                     child: Column(
                                       children: [
-                                        Expanded(child: _LevelCard(level: selected, palette: palette, onPlay: () => _play(selected))),
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            child: _LevelCard(level: selected, palette: palette, onPlay: () => _play(selected)),
+                                          ),
+                                        ),
                                         const SizedBox(height: 10),
                                         _TestTips(palette: palette),
                                       ],
@@ -247,7 +251,19 @@ class _LevelTile extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            Icon(Icons.videogame_asset_rounded, size: 26, color: Colors.white.withOpacity(0.85)),
+            Image.asset(
+              switch (level.type) {
+                'match' => 'assets/pets/bunny.png',
+                'odd' => 'assets/pets/fox.png',
+                'firefly' => 'assets/pets/star.png',
+                'simon' => 'assets/ui/crystal_node.png',
+                _ => 'assets/ui/star.png',
+              },
+              width: 32,
+              height: 32,
+              fit: BoxFit.contain,
+              excludeFromSemantics: true,
+            ),
             const SizedBox(height: 6),
             Text(
               level.name,
@@ -329,7 +345,7 @@ class _LevelCard extends StatelessWidget {
               _MetaChip(icon: Icons.timer_rounded, label: _duration(level)),
             ],
           ),
-          const Spacer(),
+          const SizedBox(height: 12),
           GameButton(
             label: 'Играть',
             tone: ButtonTone.gold,

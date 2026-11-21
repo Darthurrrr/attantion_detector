@@ -4,6 +4,7 @@ import '../app/game_app.dart';
 import '../data/models.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
+import '../widgets/ambient_effects.dart';
 import '../widgets/game_ui.dart';
 import '../widgets/top_bar.dart';
 
@@ -36,7 +37,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const SceneBackground(asset: 'assets/bg/collection.webp', veil: 0.4),
+          const SceneBackground(asset: 'assets/bg/collection.webp', veil: 0.4, sparkles: true),
           SafeArea(
             child: OrientationBuilder(
               builder: (context, orientation) {
@@ -148,7 +149,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 120, child: Image.asset(pet.asset, fit: BoxFit.contain)),
+              SizedBox(
+                height: 120,
+                child: FloatingArt(child: Image.asset(pet.asset, fit: BoxFit.contain)),
+              ),
               Text('${pet.name} стал сильнее', style: AppText.h2),
             ],
           ),
@@ -289,10 +293,18 @@ class _PetDetails extends StatelessWidget {
                 SizedBox(
                   height: 92,
                   width: 92,
-                  child: Image.asset(
-                    asset,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.pets, size: 40),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 280),
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(scale: animation, child: child),
+                    ),
+                    child: Image.asset(
+                      asset,
+                      key: ValueKey(asset),
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.pets, size: 40),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),

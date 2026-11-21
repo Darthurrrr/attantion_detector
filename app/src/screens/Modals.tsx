@@ -14,6 +14,7 @@ import {
   IconSound,
   IconTrophy,
 } from '../components/Icon'
+import SceneBanner from '../components/SceneBanner'
 import { playSound } from '../game/audio'
 import type { ChestResult } from '../game/store'
 
@@ -172,6 +173,7 @@ export function EventsModal({ open, onClose, onDaily }: { open: boolean; onClose
     <Modal open={open} onClose={onClose}>
       <h3 className="modal-title">События</h3>
       <p className="modal-sub">Особые награды и приключения этой недели</p>
+      <SceneBanner scene="events" />
 
       <button className="event-card event-card--daily" onClick={onDaily}>
         <span className="event-card__art">
@@ -269,6 +271,7 @@ export function ShopModal({
       <p className="modal-sub">
         {tab === 'gem' ? 'Кристаллы нужны для призыва и эволюции Мурзика.' : 'Монеты можно обменять на кристаллы или сундук.'}
       </p>
+      <SceneBanner scene="shop" />
 
       <div className="shop-offer">
         <span className="shop-offer__icon shop-offer__icon--gem">

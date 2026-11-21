@@ -3,6 +3,7 @@ import { useGame } from '../game/store'
 import { CHAPTER, LEVELS, LEVEL_BY_ID, TYPE_INFO } from '../game/data'
 import { Btn, Coin, Gem, HintIcon, Modal, Progress, ScreenHeader, StarImg, StarsRow } from '../components/ui'
 import { IconCheck, IconGift, IconLock, IconPlay, IconSparkle, IconTrophy } from '../components/Icon'
+import SceneBanner from '../components/SceneBanner'
 import { playSound } from '../game/audio'
 
 const NODES = [
@@ -195,6 +196,7 @@ export default function MapScreen({
             </span>
             <h3 className="level-modal__title">Уровень {selectedDef.id}</h3>
             <p className="level-modal__name">{selectedDef.name}</p>
+            <SceneBanner scene="training" />
             <div className="level-modal__stars">
               <StarsRow stars={selectedResult?.stars ?? 0} size={34} />
             </div>

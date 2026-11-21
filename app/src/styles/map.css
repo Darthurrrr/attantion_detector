@@ -526,3 +526,9 @@
   margin-bottom: 2px;
   animation: pulseGlow 3s ease-in-out infinite;
 }
+
+.level-modal .scene-banner {
+  width: 100%;
+  flex: none;
+  margin-bottom: 2px;
+}

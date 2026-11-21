@@ -89,17 +89,19 @@ export function ResPill({
   onAdd?: () => void
   compact?: boolean
 }) {
-  return (
-    <div className={`res-pill ${compact ? 'is-compact' : ''}`}>
+  const className = `res-pill ${compact ? 'is-compact' : ''}`
+  const content = (
+    <>
       {type === 'coin' ? <Coin size={compact ? 20 : 23} /> : <Gem size={compact ? 20 : 23} />}
       <span className="res-pill__value">{formatNumber(amount)}</span>
-      {onAdd && (
-        <button className="res-pill__add" onClick={onAdd} aria-label={type === 'coin' ? 'Пополнить монеты' : 'Пополнить кристаллы'}>
-          <IconPlus size={13} />
-        </button>
-      )}
-    </div>
+      {onAdd && <span className="res-pill__add" aria-hidden="true"><IconPlus size={13} /></span>}
+    </>
   )
+  if (onAdd) {
+    const label = type === 'coin' ? 'монет' : 'кристаллов'
+    return <button type="button" className={className} onClick={onAdd} aria-label={`Магазин, баланс ${formatNumber(amount)} ${label}`}>{content}</button>
+  }
+  return <div className={className}>{content}</div>
 }
 
 export function formatNumber(value: number) {

@@ -3,11 +3,8 @@ import { useGame, xpNeeded } from '../game/store'
 import { DAILY_TASKS, HERO_STAGES, LEVELS, LEVEL_BY_ID, PET_BY_ID, PET_LINES } from '../game/data'
 import { Btn, Countdown, HeartIcon, IconButton, Progress, ResPill, StarImg } from '../components/ui'
 import {
-  IconCalendar,
   IconGear,
-  IconGiftBox,
   IconMap,
-  IconPaw,
   IconPlay,
   IconMute,
   IconSound,
@@ -108,14 +105,14 @@ export default function Home({ go, openTasks, openEvents, openDaily, openShop, o
         </button>
         <button className={`rail__btn ${eventReady ? 'has-badge' : ''}`} onClick={openEvents}>
           <span className="rail__icon rail__icon--pink">
-            <IconCalendar size={24} />
+            <img src="/assets/ui/star.png" alt="" className="rail__art" draggable={false} />
           </span>
           <span className="rail__label">События</span>
           {eventReady && <span className="rail__dot" />}
         </button>
         <button className="rail__btn" onClick={() => go('collection')}>
           <span className="rail__icon rail__icon--mint">
-            <IconPaw size={24} />
+            <img src="/assets/pets/bunny.png" alt="" className="rail__art" draggable={false} />
           </span>
           <span className="rail__label">Коллекция</span>
         </button>
@@ -129,7 +126,7 @@ export default function Home({ go, openTasks, openEvents, openDaily, openShop, o
 
       <button className={`daily-card ${canClaimDaily ? 'is-ready' : ''}`} onClick={openDaily}>
         <span className="daily-card__art">
-          <IconGiftBox size={34} />
+          <img src="/assets/ui/chest.png" alt="" draggable={false} />
         </span>
         <span className="daily-card__title">Ежедневная награда</span>
         {canClaimDaily ? (

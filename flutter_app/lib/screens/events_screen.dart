@@ -5,6 +5,7 @@ import '../data/models.dart';
 import '../state/game_controller.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
+import '../widgets/ambient_effects.dart';
 import '../widgets/game_ui.dart';
 import '../widgets/top_bar.dart';
 
@@ -25,7 +26,7 @@ class EventsScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const SceneBackground(asset: 'assets/bg/world.webp', veil: 0.45, blur: 1),
+          const SceneBackground(asset: 'assets/bg/events_scene.webp', veil: 0.38, sparkles: true),
           SafeArea(
             child: OrientationBuilder(
               builder: (context, orientation) {
@@ -79,7 +80,12 @@ class EventsScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(width: 12),
-                                  Expanded(flex: 5, child: _TasksCard(state: state, cfg: cfg, controller: controller)),
+                                  Expanded(
+                                    flex: 5,
+                                    child: SingleChildScrollView(
+                                      child: _TasksCard(state: state, cfg: cfg, controller: controller),
+                                    ),
+                                  ),
                                 ],
                               ),
                       ),
@@ -106,6 +112,14 @@ class _DailyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final day = (state.dailyStreak % 7);
+    final weeklyPetId = cfg.daily.length > 6 ? cfg.daily[6]['pet'] : null;
+    String? weeklyPetAsset;
+    for (final pet in cfg.pets) {
+      if (pet.id == weeklyPetId) {
+        weeklyPetAsset = pet.asset;
+        break;
+      }
+    }
     return GamePanel(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -113,7 +127,14 @@ class _DailyCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.calendar_month_rounded, size: 18, color: Palette.gold),
+              SizedBox(
+                width: 30,
+                height: 30,
+                child: FloatingArt(
+                  distance: 2,
+                  child: Image.asset('assets/ui/chest.png', fit: BoxFit.contain, excludeFromSemantics: true),
+                ),
+              ),
               const SizedBox(width: 6),
               Text('Ежедневный вход', style: AppText.h2),
               const Spacer(),
@@ -147,10 +168,16 @@ class _DailyCard extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          if (i == 6)
-                            const Icon(Icons.pets, size: 13, color: Palette.ink)
-                          else
-                            Text('${i + 1}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: i < day ? Palette.ink : Colors.white70)),
+                          SizedBox(
+                            height: 22,
+                            child: Center(
+                              child: i == 6
+                                  ? weeklyPetAsset == null
+                                      ? const Icon(Icons.pets, size: 18, color: Palette.ink)
+                                      : Image.asset(weeklyPetAsset, height: 22, fit: BoxFit.contain, excludeFromSemantics: true)
+                                  : Text('${i + 1}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: i < day ? Palette.ink : Colors.white70)),
+                            ),
+                          ),
                           const SizedBox(height: 2),
                           Text(
                             i == 6 ? 'питомец' : 'день',

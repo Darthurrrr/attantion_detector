@@ -38,7 +38,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 420),
-            child: SceneBackground(key: ValueKey(worldAsset), asset: worldAsset, veil: 0.18),
+            child: SceneBackground(key: ValueKey(worldAsset), asset: worldAsset, veil: 0.18, sparkles: true),
           ),
           SafeArea(
             child: OrientationBuilder(
@@ -140,13 +140,23 @@ class _PetStageState extends State<PetStage> with TickerProviderStateMixin {
   late final AnimationController _idle = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2600),
-  )..repeat(reverse: true);
+  );
   late final AnimationController _squash = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 320),
   );
   double _stroke = 0;
   bool _hearts = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.of(context).disableAnimations) {
+      _idle.stop();
+    } else if (!_idle.isAnimating) {
+      _idle.repeat(reverse: true);
+    }
+  }
 
   @override
   void dispose() {
@@ -157,7 +167,7 @@ class _PetStageState extends State<PetStage> with TickerProviderStateMixin {
 
   Future<void> _tap() async {
     final controller = GameScope.read(context);
-    _squash.forward(from: 0);
+    if (!MediaQuery.of(context).disableAnimations) _squash.forward(from: 0);
     setState(() => _hearts = true);
     await controller.patPet();
     await Future<void>.delayed(const Duration(milliseconds: 700));
@@ -206,17 +216,20 @@ class _PetStageState extends State<PetStage> with TickerProviderStateMixin {
             },
             child: Hero(
               tag: 'active-pet',
-              child: Image.asset(
-                pet.asset,
-                key: ValueKey(pet.petId),
-                fit: BoxFit.contain,
-                height: double.infinity,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 160,
-                  height: 160,
-                  color: Colors.white12,
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.pets, size: 60, color: Colors.white54),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 350),
+                child: Image.asset(
+                  pet.asset,
+                  key: ValueKey('${pet.petId}-${pet.asset}'),
+                  fit: BoxFit.contain,
+                  height: double.infinity,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 160,
+                    height: 160,
+                    color: Colors.white12,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.pets, size: 60, color: Colors.white54),
+                  ),
                 ),
               ),
             ),
@@ -359,12 +372,12 @@ class _MenuGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = paletteOf(context);
     final entries = <_MenuEntry>[
-      _MenuEntry('Магазин', Icons.storefront_rounded, const Color(0xFFFFC46B), () => const ShopScreen()),
-      _MenuEntry('События', Icons.event_available_rounded, Palette.rose, () => const EventsScreen()),
-      _MenuEntry('Инвентарь', Icons.backpack_rounded, Palette.mint, () => const InventoryScreen()),
-      _MenuEntry('Профиль', Icons.person_rounded, Palette.sky, () => const ProfileScreen()),
-      _MenuEntry('Коллекция', Icons.pets_rounded, Palette.violet, () => const CollectionScreen()),
-      _MenuEntry('Призыв', Icons.auto_awesome_rounded, palette.accent, () => const SummonScreen()),
+      _MenuEntry('Магазин', 'assets/ui/gem.png', Icons.storefront_rounded, const Color(0xFFFFC46B), () => const ShopScreen()),
+      _MenuEntry('События', 'assets/ui/chest.png', Icons.event_available_rounded, Palette.rose, () => const EventsScreen()),
+      _MenuEntry('Инвентарь', 'assets/ui/egg_0.png', Icons.backpack_rounded, Palette.mint, () => const InventoryScreen()),
+      _MenuEntry('Профиль', 'assets/hero_avatar.png', Icons.person_rounded, Palette.sky, () => const ProfileScreen()),
+      _MenuEntry('Коллекция', 'assets/pets/bunny.png', Icons.pets_rounded, Palette.violet, () => const CollectionScreen()),
+      _MenuEntry('Призыв', 'assets/ui/crystal_node.png', Icons.auto_awesome_rounded, palette.accent, () => const SummonScreen()),
     ];
     return GamePanel(
       padding: const EdgeInsets.all(10),
@@ -391,8 +404,9 @@ class _MenuGrid extends StatelessWidget {
 }
 
 class _MenuEntry {
-  _MenuEntry(this.label, this.icon, this.color, this.builder);
+  _MenuEntry(this.label, this.asset, this.icon, this.color, this.builder);
   final String label;
+  final String asset;
   final IconData icon;
   final Color color;
   final Widget Function() builder;
@@ -424,8 +438,15 @@ class _MenuTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(entry.icon, size: 19, color: Colors.white),
-            const SizedBox(width: 7),
+            Image.asset(
+              entry.asset,
+              width: 34,
+              height: 34,
+              fit: BoxFit.contain,
+              excludeFromSemantics: true,
+              errorBuilder: (_, __, ___) => Icon(entry.icon, size: 19, color: Colors.white),
+            ),
+            const SizedBox(width: 6),
             Expanded(
               child: Text(
                 entry.label,

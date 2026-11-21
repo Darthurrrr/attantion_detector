@@ -4,6 +4,7 @@ import '../app/game_app.dart';
 import '../data/models.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
+import '../widgets/ambient_effects.dart';
 import '../widgets/game_ui.dart';
 import '../widgets/top_bar.dart';
 
@@ -41,7 +42,7 @@ class _ShopScreenState extends State<ShopScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const SceneBackground(asset: 'assets/bg/home.webp', veil: 0.55, blur: 2),
+          const SceneBackground(asset: 'assets/bg/shop_scene.webp', veil: 0.38, sparkles: true),
           SafeArea(
             child: OrientationBuilder(
               builder: (context, orientation) {
@@ -246,89 +247,122 @@ class _EggShop extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = paletteOf(context);
     final total = count * cfg.eggPrice;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          flex: 4,
-          child: GamePanel(
-            child: Column(
-              children: [
-                Text('Универсальное яйцо', style: AppText.h1),
-                Text('Один тип яйца на все редкости', style: AppText.tiny),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: Center(
-                    child: Image.asset('assets/ui/egg_0.png', fit: BoxFit.contain),
+    final showcase = GamePanel(
+      child: Column(
+        children: [
+          Text('Универсальное яйцо', style: AppText.h1, textAlign: TextAlign.center),
+          Text('Один тип яйца на все редкости', style: AppText.tiny, textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          Expanded(
+            child: Center(
+              child: FloatingArt(
+                child: Image.asset('assets/ui/egg_0.png', fit: BoxFit.contain),
+              ),
+            ),
+          ),
+          Text(
+            '${cfg.eggPrice} кристаллов за штуку',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Palette.gold, fontWeight: FontWeight.w900),
+          ),
+        ],
+      ),
+    );
+    final controls = GamePanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Сколько яиц?', style: AppText.h2),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              RoundIconButton(
+                icon: const Icon(Icons.remove_rounded, color: Colors.white, size: 20),
+                tooltip: 'Уменьшить количество',
+                size: 40,
+                onTap: () => onCount((count - 1).clamp(1, maxCount == 0 ? 1 : maxCount).toInt()),
+              ),
+              Expanded(
+                child: Center(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 180),
+                    child: Text(
+                      '$count',
+                      key: ValueKey(count),
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: palette.accent, height: 1),
+                    ),
                   ),
                 ),
-                Text('${cfg.eggPrice} кристаллов за штуку', style: const TextStyle(color: Palette.gold, fontWeight: FontWeight.w900)),
-              ],
-            ),
+              ),
+              RoundIconButton(
+                icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+                tooltip: 'Увеличить количество',
+                size: 40,
+                onTap: () => onCount((count + 1).clamp(1, maxCount == 0 ? 1 : maxCount).toInt()),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          flex: 3,
-          child: GamePanel(
-            child: Column(
+          const SizedBox(height: 6),
+          Text(
+            maxCount == 0
+                ? 'Недостаточно кристаллов даже на одно яйцо'
+                : 'Можно купить максимум: $maxCount',
+            style: AppText.tiny,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GemIcon(size: 16),
+              const SizedBox(width: 5),
+              Text('Итого: $total', style: AppText.h2),
+            ],
+          ),
+          const SizedBox(height: 10),
+          GameButton(
+            label: 'Купить',
+            tone: ButtonTone.gold,
+            height: 46,
+            enabled: maxCount > 0 && total <= state.gems,
+            onTap: onBuy,
+          ),
+          const SizedBox(height: 6),
+          Text('Яйца попадут в инвентарь. Открыть их можно во вкладке «Призыв».',
+              style: AppText.tiny, textAlign: TextAlign.center),
+        ],
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 520) {
+          return ListView(
+            children: [
+              SizedBox(height: 230, child: showcase),
+              const SizedBox(height: 10),
+              controls,
+            ],
+          );
+        }
+        // На невысоких экранах содержимое остаётся доступным прокруткой.
+        final height = constraints.maxHeight < 300 ? 300.0 : constraints.maxHeight;
+        return SingleChildScrollView(
+          child: SizedBox(
+            height: height,
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Сколько яиц?', style: AppText.h2),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    RoundIconButton(
-                      icon: const Icon(Icons.remove_rounded, color: Colors.white, size: 20),
-                      size: 40,
-                      onTap: () => onCount((count - 1).clamp(1, maxCount == 0 ? 1 : maxCount).toInt()),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text('$count', style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: palette.accent, height: 1)),
-                      ),
-                    ),
-                    RoundIconButton(
-                      icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
-                      size: 40,
-                      onTap: () => onCount((count + 1).clamp(1, maxCount == 0 ? 1 : maxCount).toInt()),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  maxCount == 0
-                      ? 'Недостаточно кристаллов даже на одно яйцо'
-                      : 'Можно купить максимум: $maxCount',
-                  style: AppText.tiny,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GemIcon(size: 16),
-                    const SizedBox(width: 5),
-                    Text('Итого: $total', style: AppText.h2),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                GameButton(
-                  label: 'Купить',
-                  tone: ButtonTone.gold,
-                  height: 46,
-                  enabled: maxCount > 0 && total <= state.gems,
-                  onTap: onBuy,
-                ),
-                const SizedBox(height: 6),
-                Text('Яйца попадут в инвентарь. Открыть их можно во вкладке «Призыв».',
-                    style: AppText.tiny, textAlign: TextAlign.center),
+                Expanded(flex: 4, child: showcase),
+                const SizedBox(width: 12),
+                Expanded(flex: 3, child: controls),
               ],
             ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
