@@ -49,6 +49,25 @@ jobs:
           tail -n 20 /tmp/analyze.txt
           exit $code
 
+      # Полный отчёт складывается комментарием к PR: логи запуска не всегда
+      # доступны для скачивания, а список замечаний нужен целиком.
+      - name: Отчёт анализа в PR
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -s /tmp/analyze.txt ]; then exit 0; fi
+          {
+            printf 'Автоматический отчёт `flutter analyze` (коммит %s).\n\n```\n' "$GITHUB_SHA"
+            grep -E '^\s*(error|warning|info)\s+•' /tmp/analyze.txt | grep -v 'deprecated_member_use' | head -n 120
+            printf '\n```\n\nВсего строк: %s; из них ошибок: %s.\n' \
+              "$(grep -cE '^\s*(error|warning|info)\s+•' /tmp/analyze.txt || true)" \
+              "$(grep -cE '^\s*error\s+•' /tmp/analyze.txt || true)"
+          } > /tmp/comment.md
+          gh pr comment "$NUMBER" --body-file /tmp/comment.md --edit-last --create-if-none
+
       - name: Тесты
         working-directory: flutter_app
         run: flutter test
