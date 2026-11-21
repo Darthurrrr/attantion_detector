@@ -10,7 +10,7 @@ export type Pet = {
   stats: [number, number, number] // внимание, скорость, удача
 }
 
-export type LevelType = 'match' | 'odd' | 'firefly' | 'simon'
+export type LevelType = 'match' | 'odd' | 'firefly' | 'simon' | 'count'
 
 export type LevelDef = {
   id: number
@@ -29,6 +29,8 @@ export type LevelDef = {
   time?: number
   /** длина последовательности для simon */
   seq?: number
+  /** длительность раунда в секундах для count */
+  seconds?: number
 }
 
 export type LevelResult = {

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useGame, xpNeeded } from '../game/store'
 import { DAILY_TASKS, HERO_STAGES, LEVELS, LEVEL_BY_ID, PET_BY_ID, PET_LINES } from '../game/data'
-import { Btn, Countdown, IconButton, Progress, ResPill, StarImg } from '../components/ui'
+import { Btn, Countdown, HeartIcon, IconButton, Progress, ResPill, StarImg } from '../components/ui'
 import {
   IconCalendar,
   IconGear,
@@ -146,7 +146,9 @@ export default function Home({ go, openTasks, openEvents, openDaily, openShop, o
       <div className="home-hero">
         <div className="speech" key={lineIndex}>
           <span>{PET_LINES[lineIndex]}</span>
-          <i>♥</i>
+          <i>
+            <HeartIcon size={13} />
+          </i>
         </div>
         <button className="home-hero__pet" onClick={petTheCat} aria-label="Погладить питомца">
           <span className="home-hero__glow" />
@@ -155,7 +157,7 @@ export default function Home({ go, openTasks, openEvents, openDaily, openShop, o
         </button>
         {hearts.map((h) => (
           <span key={h.id} className="heart-pop" style={{ left: `${h.x}%` }}>
-            ♥
+            <HeartIcon size={26} />
           </span>
         ))}
       </div>

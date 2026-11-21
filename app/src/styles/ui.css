@@ -7,6 +7,12 @@
   filter: drop-shadow(0 2px 2px rgba(58, 20, 4, 0.35));
 }
 
+.heart-icon {
+  display: block;
+  flex: none;
+  filter: drop-shadow(0 2px 3px rgba(120, 20, 60, 0.35));
+}
+
 .gem-icon {
   filter: drop-shadow(0 0 6px rgba(160, 210, 255, 0.55));
 }

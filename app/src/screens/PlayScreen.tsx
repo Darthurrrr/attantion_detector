@@ -8,6 +8,7 @@ import MatchGame from '../games/MatchGame'
 import OddGame from '../games/OddGame'
 import FireflyGame from '../games/FireflyGame'
 import SimonGame from '../games/SimonGame'
+import CountGame from '../games/CountGame'
 import { starsFor } from '../games/types'
 import { playSound } from '../game/audio'
 import type { FinishReward } from '../game/store'
@@ -108,8 +109,10 @@ export default function PlayScreen({
             <OddGame key={attempt} levelId={level.id} onFinish={handleFinish} />
           ) : level.type === 'firefly' ? (
             <FireflyGame key={attempt} levelId={level.id} onFinish={handleFinish} />
-          ) : (
+          ) : level.type === 'simon' ? (
             <SimonGame key={attempt} levelId={level.id} onFinish={handleFinish} />
+          ) : (
+            <CountGame key={attempt} levelId={level.id} onFinish={handleFinish} />
           ))}
 
         {phase === 'countdown' && (
@@ -156,10 +159,10 @@ export default function PlayScreen({
               {result.leveledUp && <span className="result-tag result-tag--level">Новый уровень героя!</span>}
             </div>
             <div className="result-rewards">
-              <span className="result-reward">
+              <span className="result-reward result-reward--coin">
                 <Coin size={24} /> +{result.coins}
               </span>
-              <span className="result-reward">
+              <span className="result-reward result-reward--gem">
                 <Gem size={24} /> +{result.gems}
               </span>
               <span className="result-reward result-reward--xp"><IconSparkle size={16} /> +{result.xp} XP</span>

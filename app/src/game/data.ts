@@ -315,6 +315,20 @@ export const LEVELS: LevelDef[] = [
     tip: 'Финальное испытание главы. Семь сигналов — и мир внимания ваш!',
     seq: 7,
   },
+  {
+    id: 16,
+    type: 'count',
+    name: 'Считаем искры',
+    tip: 'Искры вспыхивают и гаснут. Считайте про себя — и отвечайте, когда погаснут все.',
+    seconds: 3,
+  },
+  {
+    id: 17,
+    type: 'count',
+    name: 'Вспышка созвездий',
+    tip: 'Дольше не значит проще: искр становится больше. Держите счёт по группам.',
+    seconds: 4,
+  },
 ]
 
 export const LEVEL_BY_ID: Record<number, LevelDef> = Object.fromEntries(LEVELS.map((l) => [l.id, l]))
@@ -348,6 +362,12 @@ export const TYPE_INFO: Record<
     short: 'Мелодия',
     hint: 'Запомните и повторите последовательность кристаллов',
     color: '#c58bff',
+  },
+  count: {
+    label: 'Посчитай искры',
+    short: 'Искры',
+    hint: 'Считайте вспышки искр, пока они не погасли, и выберите ответ',
+    color: '#8ef0c0',
   },
 }
 

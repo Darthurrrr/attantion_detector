@@ -46,8 +46,26 @@ export function StarImg({ size = 22, filled = true, className = '' }: { size?: n
   )
 }
 
-export function HeartIcon({ size = 22 }: { size?: number }) {
-  return <img src="/assets/ui/heart.png" width={size} height={size} alt="" draggable={false} />
+export function HeartIcon({ size = 22, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 30" className={`heart-icon ${className}`} aria-hidden>
+      <defs>
+        <linearGradient id="heartBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffd0e4" />
+          <stop offset="42%" stopColor="#ff8fbe" />
+          <stop offset="100%" stopColor="#e8508f" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M16 27.4c-.6 0-1.1-.2-1.6-.6C8.9 21.9 3 16.7 3 10.6 3 6.1 6.4 2.8 10.6 2.8c2.2 0 4.2 1 5.4 2.6 1.2-1.6 3.2-2.6 5.4-2.6C25.6 2.8 29 6.1 29 10.6c0 6.1-5.9 11.3-11.4 16.2-.5.4-1 .6-1.6.6Z"
+        fill="url(#heartBody)"
+        stroke="#c93a76"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      <ellipse cx="10.4" cy="9.6" rx="3.1" ry="2" fill="#fff" opacity=".55" transform="rotate(-28 10.4 9.6)" />
+    </svg>
+  )
 }
 
 export function StarsRow({ stars, size = 26, max = 3 }: { stars: number; size?: number; max?: number }) {

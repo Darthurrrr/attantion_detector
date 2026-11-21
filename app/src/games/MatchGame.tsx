@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { LEVEL_BY_ID, PETS } from '../game/data'
 import { playSound } from '../game/audio'
 import { clamp, shuffle, type GameProps } from './types'
-import { IconPaw } from '../components/Icon'
+import { IconPaw, IconSparkle } from '../components/Icon'
 
 type Card = { uid: number; petId: string; img: string }
 
@@ -21,10 +21,14 @@ export default function MatchGame({ levelId, onFinish }: GameProps) {
   const [flipped, setFlipped] = useState<number[]>([])
   const [matched, setMatched] = useState<number[]>([])
   const [moves, setMoves] = useState(0)
+  const [streak, setStreak] = useState(0)
+  const [bonus, setBonus] = useState(0)
+  const [bonusPulse, setBonusPulse] = useState(0)
   const [lock, setLock] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const startedAt = useRef(Date.now())
   const finished = useRef(false)
+  const ComboBonus = useRef(0)
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -57,8 +61,10 @@ export default function MatchGame({ levelId, onFinish }: GameProps) {
       if (deck[a].petId === deck[b].petId) {
         setMatched((m) => [...m, a, b])
         setFlipped([])
+        setStreak((s) => s + 1)
         playSound('reward', 0.65)
       } else {
+        setStreak(0)
         setLock(true)
         window.setTimeout(() => {
           setFlipped([])
@@ -70,9 +76,17 @@ export default function MatchGame({ levelId, onFinish }: GameProps) {
 
   const cols = 4
 
+  useEffect(() => {
+    if (streak === 0 || streak % 3 !== 0) return
+    ComboBonus.current = Math.min(12, ComboBonus.current + 4)
+    setBonus(ComboBonus.current)
+    setBonusPulse((p) => p + 1)
+    playSound('reward', 0.85)
+  }, [streak])
+
   return (
     <div className="game match-game">
-      <div className="game-stats">
+      <div className="game-stats game-stats--four">
         <span className="game-stat">
           <span className="game-stat__label">Ходы</span>
           <b>{moves}</b>
@@ -83,11 +97,21 @@ export default function MatchGame({ levelId, onFinish }: GameProps) {
             {matched.length / 2} / {pairs}
           </b>
         </span>
+        <span className={`game-stat ${streak >= 3 ? 'game-stat--combo' : ''}`} key={`streak-${streak}`}>
+          <span className="game-stat__label">Серия</span>
+          <b className={streak >= 3 ? 'is-combo' : ''}>{streak >= 2 ? `×${streak}` : streak}</b>
+        </span>
         <span className="game-stat">
           <span className="game-stat__label">Время</span>
           <b>{elapsed}с</b>
         </span>
       </div>
+
+      {bonus > 0 && (
+        <span className="combo-toast" key={bonusPulse}>
+          <IconSparkle size={14} /> Серия! +{bonus} к счёту
+        </span>
+      )}
 
       <div className="match-board" style={{ ['--match-cols' as string]: cols }}>
         {deck.map((card, index) => {
@@ -114,7 +138,11 @@ export default function MatchGame({ levelId, onFinish }: GameProps) {
           )
         })}
       </div>
-      <p className="game-tip">Найдите все пары питомцев. Меньше ходов — больше звёзд!</p>
+      <p className="game-tip">
+        {streak >= 3
+          ? 'Отличная серия! Каждые 3 пары подряд добавляют бонус к счёту'
+          : 'Найдите все пары питомцев. Меньше ходов — больше звёзд!'}
+      </p>
     </div>
   )
 }

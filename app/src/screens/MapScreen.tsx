@@ -21,9 +21,11 @@ const NODES = [
   { x: 41, y: 1412 },
   { x: 29, y: 1540 },
   { x: 63, y: 1665 },
+  { x: 40, y: 1780 },
+  { x: 58, y: 1890 },
 ]
 
-const MAP_HEIGHT = 1800
+const MAP_HEIGHT = 2130
 
 function buildPath() {
   let d = `M ${NODES[0].x} ${NODES[0].y}`
@@ -155,11 +157,14 @@ export default function MapScreen({
             )
           })}
 
-          <div className="map-finish" style={{ top: 1750 }}>
+          <div className="map-finish" style={{ top: 2020 }}>
             <span className="map-finish__icon">
               <IconTrophy size={22} />
             </span>
-            <span>Конец главы</span>
+            <span className="map-finish__title">Конец главы</span>
+            <span className="map-finish__sub">
+              {clearedCount}/{LEVELS.length} уровней · {totalStars}/{LEVELS.length * 3} звёзд
+            </span>
           </div>
         </div>
       </div>

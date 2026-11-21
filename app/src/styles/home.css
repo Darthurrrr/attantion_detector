@@ -390,10 +390,9 @@
 
 .speech i {
   display: block;
-  font-style: normal;
+  margin-top: 3px;
   color: #fb6d8a;
-  font-size: 12px;
-  margin-top: 2px;
+  line-height: 0;
 }
 
 .speech::after {
@@ -414,11 +413,11 @@
   position: absolute;
   bottom: 190px;
   z-index: 6;
-  font-size: 24px;
-  color: #ff7fa8;
-  text-shadow: 0 2px 0 #fff;
+  display: block;
+  line-height: 0;
   animation: floatUpFade 1.15s ease-out both;
   pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(120, 20, 60, 0.4));
 }
 
 /* ── нижняя панель ─────────────────────────────────────── */
