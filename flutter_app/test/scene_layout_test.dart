@@ -89,6 +89,8 @@ void main() {
     await expectNoFlutterError(tester, () async {
       await tester.pumpWidget(GameScope(controller: controller, child: const MaterialApp(home: ShopScreen())));
       await tester.scrollUntilVisible(find.byTooltip('Увеличить количество'), 140, scrollable: scrollableInside('egg-shop-content'));
+      await tester.pump(); // Применяем новое положение прокрутки перед касанием.
+      expect(find.byTooltip('Увеличить количество').hitTestable(), findsOneWidget);
       await tester.tap(find.byTooltip('Увеличить количество'));
       await tester.pump(const Duration(milliseconds: 250));
     }, reason: 'прокрутка магазина на узком экране');
@@ -104,6 +106,7 @@ void main() {
     await expectNoFlutterError(tester, () async {
       await tester.pumpWidget(GameScope(controller: controller, child: const MaterialApp(home: EventsScreen())));
       await tester.scrollUntilVisible(find.text('Пройдите тренировку 5'), 180, scrollable: scrollableInside('events-content'));
+      await tester.pump();
       await tester.scrollUntilVisible(find.text('Первые шаги'), 180, scrollable: scrollableInside('events-content'));
       await tester.pump();
     }, reason: 'прокрутка событий на узком экране');
@@ -119,6 +122,8 @@ void main() {
     await expectNoFlutterError(tester, () async {
       await tester.pumpWidget(GameScope(controller: controller, child: const MaterialApp(home: TrainingsScreen())));
       await tester.scrollUntilVisible(find.text('Играть'), 150, scrollable: scrollableInside('training-content'));
+      await tester.pump();
+      expect(find.text('Играть').hitTestable(), findsOneWidget);
       await tester.tap(find.text('Играть'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 350));
