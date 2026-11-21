@@ -43,6 +43,94 @@ class GameTopBar extends StatelessWidget {
       _NavItem('profile', 'Профиль', Icons.person_rounded, null),
     ];
 
+    Widget profile(bool dense) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => GameTopBar.open(context, 'profile'),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: dense ? 34 : 38,
+                  height: dense ? 34 : 38,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [palette.bright, palette.soft]),
+                    border: Border.all(color: palette.accent.withOpacity(0.8), width: 1.6),
+                  ),
+                  child: Image.asset(state.avatar, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.person)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: dense ? 12 : 13, fontWeight: FontWeight.w900, color: Colors.white),
+                    ),
+                    Row(
+                      children: [
+                        Flexible(child: Text('Ур. ${state.level}', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.tiny)),
+                        const SizedBox(width: 4),
+                        Flexible(child: SizedBox(width: dense ? 42 : 54, child: ProgressBar(value: state.accountProgress, height: 5))),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+
+    Widget wallet(bool dense) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CurrencyPill(icon: const CoinIcon(size: 15), value: '${state.coins}', color: Palette.gold, compact: dense),
+            const SizedBox(width: 6),
+            CurrencyPill(
+              icon: GemIcon(size: 15),
+              value: '${state.gems}',
+              color: Palette.sky,
+              compact: dense,
+              onTap: () => GameTopBar.open(context, 'shop'),
+            ),
+            const SizedBox(width: 6),
+            CurrencyPill(
+              icon: EggIcon(size: 15),
+              value: '${state.eggs}',
+              color: Palette.violet,
+              compact: dense,
+              onTap: () => GameTopBar.open(context, 'summon'),
+            ),
+          ],
+        );
+
+    Widget navigation(bool dense) => SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              for (final item in navItems)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                  child: _NavButton(item: item, active: current == item.key, compact: dense),
+                ),
+              if (state.isAdmin)
+                Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: _NavButton(
+                    item: const _NavItem('admin', 'Админ', Icons.settings_suggest_rounded, null),
+                    active: current == 'admin',
+                    compact: dense,
+                  ),
+                ),
+            ],
+          ),
+        );
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: compact ? 10 : 14, vertical: compact ? 6 : 8),
       decoration: BoxDecoration(
@@ -52,90 +140,47 @@ class GameTopBar extends StatelessWidget {
         border: Border(bottom: BorderSide(color: palette.accent.withOpacity(0.28), width: 1.4)),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.35), blurRadius: 16, offset: const Offset(0, 6))],
       ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => GameTopBar.open(context, 'profile'),
-            child: Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // На телефонах кошелёк и навигация получают отдельные строки. Имя
+          // может сокращаться, а все разделы остаются доступны прокруткой.
+          final dense = compact || constraints.maxWidth < 440;
+          if (dense) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    width: compact ? 34 : 38,
-                    height: compact ? 34 : 38,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [palette.bright, palette.soft]),
-                      border: Border.all(color: palette.accent.withOpacity(0.8), width: 1.6),
-                    ),
-                    child: Image.asset(state.avatar, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.person)),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                Row(
                   children: [
-                    Text(
-                      state.name,
-                      style: TextStyle(fontSize: compact ? 12 : 13, fontWeight: FontWeight.w900, color: Colors.white),
-                    ),
-                    Row(
-                      children: [
-                        Text('Ур. ${state.level}', style: AppText.tiny),
-                        const SizedBox(width: 6),
-                        SizedBox(width: compact ? 42 : 54, child: ProgressBar(value: state.accountProgress, height: 5)),
-                      ],
+                    Expanded(child: profile(true)),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      flex: 2,
+                      child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerRight, child: wallet(true)),
                     ),
                   ],
                 ),
+                const SizedBox(height: 6),
+                navigation(true),
               ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          CurrencyPill(icon: const CoinIcon(size: 15), value: '${state.coins}', color: Palette.gold, compact: compact),
-          const SizedBox(width: 6),
-          CurrencyPill(
-            icon: GemIcon(size: 15),
-            value: '${state.gems}',
-            color: Palette.sky,
-            compact: compact,
-            onTap: () => GameTopBar.open(context, 'shop'),
-          ),
-          const SizedBox(width: 6),
-          CurrencyPill(
-            icon: EggIcon(size: 15),
-            value: '${state.eggs}',
-            color: Palette.violet,
-            compact: compact,
-            onTap: () => GameTopBar.open(context, 'summon'),
-          ),
-          const Spacer(),
-          Expanded(
-            flex: 6,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              reverse: true,
-              child: Row(
-                children: [
-                  for (final item in navItems)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
-                      child: _NavButton(item: item, active: current == item.key, compact: compact),
-                    ),
-                  if (state.isAdmin)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 6),
-                      child: _NavButton(
-                        item: const _NavItem('admin', 'Админ', Icons.settings_suggest_rounded, null),
-                        active: current == 'admin',
-                        compact: compact,
-                      ),
-                    ),
-                ],
+            );
+          }
+          // В ландшафте сохраняется одна строка; длинное имя и крупный баланс
+          // не могут вытолкнуть прокручиваемую навигацию за пределы экрана.
+          final profileWidth = (constraints.maxWidth * 0.24).clamp(0.0, 190.0).toDouble();
+          final walletWidth = (constraints.maxWidth * 0.35).clamp(0.0, 260.0).toDouble();
+          return Row(
+            children: [
+              SizedBox(width: profileWidth, child: profile(false)),
+              const SizedBox(width: 12),
+              SizedBox(
+                width: walletWidth,
+                child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerRight, child: wallet(false)),
               ),
-            ),
-          ),
-        ],
+              const SizedBox(width: 8),
+              Expanded(child: navigation(false)),
+            ],
+          );
+        },
       ),
     );
   }

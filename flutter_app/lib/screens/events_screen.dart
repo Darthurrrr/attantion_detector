@@ -136,9 +136,13 @@ class _DailyCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 6),
-              Text('Ежедневный вход', style: AppText.h2),
-              const Spacer(),
-              Text('Серия: ${state.dailyStreak} дн.', style: AppText.tiny),
+              Expanded(
+                child: Text('Ежедневный вход', style: AppText.h2, maxLines: 2, overflow: TextOverflow.ellipsis),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text('Серия: ${state.dailyStreak} дн.', style: AppText.tiny, maxLines: 2, textAlign: TextAlign.end),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -235,9 +239,13 @@ class _TasksCard extends StatelessWidget {
             children: [
               const Icon(Icons.checklist_rounded, size: 18, color: Palette.mint),
               const SizedBox(width: 6),
-              Text('Ежедневные задания', style: AppText.h2),
-              const Spacer(),
-              Text('Награду забираете сами', style: AppText.tiny),
+              Expanded(
+                child: Text('Ежедневные задания', style: AppText.h2, maxLines: 2, overflow: TextOverflow.ellipsis),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text('Награду забираете сами', style: AppText.tiny, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.end),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -346,9 +354,13 @@ class _EventCard extends StatelessWidget {
             children: [
               const Icon(Icons.auto_awesome_rounded, size: 18, color: Palette.rose),
               const SizedBox(width: 6),
-              Text(event['name'] as String? ?? 'Событие', style: AppText.h2),
-              const Spacer(),
-              Text('Одноразовое', style: AppText.tiny),
+              Expanded(
+                child: Text(event['name'] as String? ?? 'Событие', style: AppText.h2, maxLines: 2, overflow: TextOverflow.ellipsis),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text('Одноразовое', style: AppText.tiny, maxLines: 2, textAlign: TextAlign.end),
+              ),
             ],
           ),
           const SizedBox(height: 6),

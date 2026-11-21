@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: npm
@@ -119,8 +119,13 @@ jobs:
             printf 'Автоматический отчёт Flutter (коммит %s).\n\n' "$GITHUB_SHA"
             printf 'Анализ — ошибки и предупреждения:\n\n```\n'
             grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
-            printf '\n```\n\nПоследние строки тестов:\n\n```\n'
-            tail -n 200 /tmp/flutter-test.txt
+            printf '\n```\n\nРезультат тестов:\n\n```\n'
+            if grep -q 'Some tests failed' /tmp/flutter-test.txt; then
+              # Показываем источник ошибки, а не только последний stack trace.
+              grep -n -B 1 -A 3 -E 'The relevant error-causing widget was:|The following .* was thrown|A RenderFlex overflowed| \[E\]|^  Actual:|Failing tests:' /tmp/flutter-test.txt | head -n 300 || true
+            else
+              tail -n 3 /tmp/flutter-test.txt
+            fi
             printf '\n```\n'
           } > /tmp/comment.md
           gh pr comment "$NUMBER" --body-file /tmp/comment.md --edit-last --create-if-none
