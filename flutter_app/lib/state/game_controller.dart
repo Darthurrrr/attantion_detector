@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../data/models.dart';
 import '../services/api.dart';
@@ -19,6 +20,8 @@ class GameController extends ChangeNotifier {
   final DeviceStore device;
 
   LoadPhase phase = LoadPhase.booting;
+  /// Вибро-отклик включается настройками устройства по умолчанию.
+  bool settingsHaptics = true;
   String? errorText;
   GameConfig? config;
   GameState? state;
@@ -212,6 +215,14 @@ class GameController extends ChangeNotifier {
 
   Future<void> patPet() async {
     offlinePats++;
+    // Лёгкая вибро-отдача на телефоне: усиливает ощущение «живого» питомца.
+    if (settingsHaptics) {
+      try {
+        await HapticFeedback.selectionClick();
+      } catch (_) {
+        // На устройствах без вибро просто продолжаем без отклика.
+      }
+    }
     await audio.cuddleSound();
     if (api.token == null) return;
     try {
