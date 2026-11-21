@@ -25,8 +25,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = GameScope.of(context);
-    final state = controller.state;
+    final state = GameScope.of(context).state;
     if (state == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
