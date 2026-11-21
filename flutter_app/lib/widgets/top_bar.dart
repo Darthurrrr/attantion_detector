@@ -147,26 +147,32 @@ class GameTopBar extends StatelessWidget {
   static void open(BuildContext context, String key) {
     final controller = GameScope.read(context);
     controller.audio.transitionSound();
-    switch (key) {
-      case 'home':
-        Navigator.of(context).popUntil((route) => route.isFirst);
-      case 'map':
-        Navigator.of(context).push(_route(const TrainingsScreen()));
-      case 'collection':
-        Navigator.of(context).push(_route(const CollectionScreen()));
-      case 'summon':
-        Navigator.of(context).push(_route(const SummonScreen()));
-      case 'shop':
-        Navigator.of(context).push(_route(const ShopScreen()));
-      case 'inventory':
-        Navigator.of(context).push(_route(const InventoryScreen()));
-      case 'events':
-        Navigator.of(context).push(_route(const EventsScreen()));
-      case 'profile':
-        Navigator.of(context).push(_route(const ProfileScreen()));
-      case 'admin':
-        Navigator.of(context).push(_route(const AdminScreen()));
+    if (key == 'home') {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      return;
     }
+    final Widget page;
+    switch (key) {
+      case 'map':
+        page = const TrainingsScreen();
+      case 'collection':
+        page = const CollectionScreen();
+      case 'summon':
+        page = const SummonScreen();
+      case 'shop':
+        page = const ShopScreen();
+      case 'inventory':
+        page = const InventoryScreen();
+      case 'events':
+        page = const EventsScreen();
+      case 'profile':
+        page = const ProfileScreen();
+      case 'admin':
+        page = const AdminScreen();
+      default:
+        page = const TrainingsScreen();
+    }
+    Navigator.of(context).push(_route(page));
   }
 
   static Route<void> _route(Widget page) => PageRouteBuilder<void>(

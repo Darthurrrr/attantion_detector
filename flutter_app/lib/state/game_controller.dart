@@ -26,9 +26,8 @@ class GameController extends ChangeNotifier {
   final List<Toast> toasts = [];
   int _toastSeq = 0;
 
-  // Локальный счётчик поглаживаний для гостевого режима.
+  // Локальный счётчик поглаживаний: срабатывает даже без сети.
   int offlinePats = 0;
-  int offlineGames = 0;
 
   bool get ready => state != null && config != null;
 
@@ -256,10 +255,7 @@ class GameController extends ChangeNotifier {
       ),
       sound: false,
     );
-    if (result == null) {
-      offlineGames++;
-      return null;
-    }
+    if (result == null) return null;
     final reward = result['reward'] as Map<String, dynamic>;
     final newState = GameState.fromJson(Map<String, dynamic>.from(result['state'] as Map));
     state = newState;

@@ -52,10 +52,13 @@ class _SummonScreenState extends State<SummonScreen> with SingleTickerProviderSt
             switch (kind) {
               case 'legendary':
                 controller.audio.legendaryFanfare();
+                break;
               case 'reward':
                 controller.audio.rewardSound();
+                break;
               case 'crystal':
                 controller.audio.crystalSound();
+                break;
               default:
                 controller.audio.tapSound();
             }

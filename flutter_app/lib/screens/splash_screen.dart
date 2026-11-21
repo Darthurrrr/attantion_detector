@@ -6,6 +6,7 @@ import '../theme/app_text.dart';
 import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
 import 'home_screen.dart';
+import 'offline_screen.dart';
 
 /// Заставка: логотип, загрузка мира и подсказка. Ориентация — любая.
 class SplashScreen extends StatefulWidget {
@@ -35,9 +36,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (!mounted) return;
     await Future<void>.delayed(const Duration(milliseconds: 650));
     if (!mounted) return;
+    final ready = controller.phase == LoadPhase.ready;
     Navigator.of(context).pushReplacement(PageRouteBuilder<void>(
       transitionDuration: const Duration(milliseconds: 460),
-      pageBuilder: (_, animation, __) => FadeTransition(opacity: animation, child: const HomeScreen()),
+      pageBuilder: (_, animation, __) => FadeTransition(
+        opacity: animation,
+        child: ready
+            ? const HomeScreen()
+            : OfflineScreen(
+                onRetry: () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute<void>(builder: (_) => const HomeScreen()),
+                ),
+              ),
+      ),
     ));
   }
 
@@ -169,7 +180,7 @@ class _Loader extends StatelessWidget {
     final message = switch (controller.phase) {
       LoadPhase.booting => 'Загрузка мира Мурзика…',
       LoadPhase.ready => 'Мир готов. Начинаем!',
-      LoadPhase.offline => 'Офлайн-режим: тренировки доступны, награды копятся локально',
+      LoadPhase.offline => 'Сервер недоступен — проверьте интернет и повторите попытку',
       LoadPhase.error => controller.errorText ?? 'Что-то пошло не так',
     };
     return Column(

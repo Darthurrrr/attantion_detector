@@ -88,10 +88,13 @@ class _PlayScreenState extends State<PlayScreen> {
     switch (kind) {
       case 'reward':
         audio.rewardSound();
+        break;
       case 'crystal':
         audio.crystalSound();
+        break;
       case 'error':
         audio.tapSound();
+        break;
       default:
         audio.tapSound();
     }
@@ -397,7 +400,8 @@ class _ResultCard extends StatelessWidget {
                               ],
                             )
                           else
-                            Text('Офлайн: результат сохранён локально, награда придёт после подключения.',
+                            Text('Нет связи: результат не зачтён — сервер не подтвердил награду. '
+                                'Проверьте интернет и попробуйте снова.',
                                 style: AppText.small),
                           const SizedBox(height: 14),
                           Row(
