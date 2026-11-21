@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   server:
@@ -49,6 +48,9 @@ jobs:
   flutter:
     name: Клиент (analyze + test)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
@@ -71,32 +73,13 @@ jobs:
           tail -n 20 /tmp/analyze.txt
           exit $code
 
-      # Полный отчёт складывается комментарием к PR: логи запуска не всегда
-      # доступны для скачивания, а список замечаний нужен целиком.
-      - name: Отчёт анализа в PR
-        if: always() && github.event_name == 'pull_request'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          if [ ! -s /tmp/analyze.txt ]; then exit 0; fi
-          {
-            printf 'Автоматический отчёт `flutter analyze` (коммит %s).\n\n```\n' "$GITHUB_SHA"
-            grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
-            printf '\n```\n\nВсего строк: %s; из них ошибок: %s.\n' \
-              "$(grep -cE '^\s*(error|warning|info)\s+•' /tmp/analyze.txt || true)" \
-              "$(grep -cE '^\s*error\s+•' /tmp/analyze.txt || true)"
-          } > /tmp/comment.md
-          gh pr comment "$NUMBER" --body-file /tmp/comment.md --edit-last --create-if-none
-
       - name: Тесты
         working-directory: flutter_app
         run: |
           set +e
           flutter test --reporter expanded > /tmp/flutter-test.txt 2>&1
           code=$?
-          tail -n 60 /tmp/flutter-test.txt
+          cat /tmp/flutter-test.txt
           if [ "$code" -ne 0 ]; then
             # Последние строки доступны в аннотациях, даже если загрузка логов недоступна.
             while IFS= read -r line; do
@@ -107,20 +90,27 @@ jobs:
           fi
           exit $code
 
-      - name: Отчёт тестов в PR
+      # Краткий отчёт помогает, если полный лог запуска недоступен.
+      - name: Отчёт Flutter в PR
         if: always() && github.event_name == 'pull_request'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [ ! -s /tmp/flutter-test.txt ]; then exit 0; fi
+          if [ ! -s /tmp/analyze.txt ] && [ ! -s /tmp/flutter-test.txt ]; then exit 0; fi
           {
             printf 'Автоматический отчёт Flutter (коммит %s).\n\n' "$GITHUB_SHA"
             printf 'Анализ — ошибки и предупреждения:\n\n```\n'
-            grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
+            if [ -s /tmp/analyze.txt ]; then
+              grep -E '^\s*(error|warning)\s+•' /tmp/analyze.txt || true
+            else
+              printf 'Анализ не запущен.\n'
+            fi
             printf '\n```\n\nРезультат тестов:\n\n```\n'
-            if grep -q 'Some tests failed' /tmp/flutter-test.txt; then
+            if [ ! -s /tmp/flutter-test.txt ]; then
+              printf 'Тесты не запущены.\n'
+            elif grep -q 'Some tests failed' /tmp/flutter-test.txt; then
               # Показываем источник ошибки, а не только последний stack trace.
               grep -n -B 1 -A 3 -E 'The relevant error-causing widget was:|The following .* was thrown|A RenderFlex overflowed| \[E\]|^  Actual:|Failing tests:' /tmp/flutter-test.txt | head -n 300 || true
             else
