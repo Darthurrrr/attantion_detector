@@ -151,7 +151,8 @@ void main() {
       'assets/layers/summon_crystals.png',
     ]) {
       final bytes = await rootBundle.load(asset);
-      final image = await ui.decodeImageFromList(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+      final codec = await ui.instantiateImageCodec(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+      final image = (await codec.getNextFrame()).image;
       final pixels = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
       var transparent = false;
       var opaque = false;
@@ -162,6 +163,7 @@ void main() {
         if (transparent && opaque) break;
       }
       image.dispose();
+      codec.dispose();
       expect(transparent && opaque, isTrue, reason: asset);
     }
   });
