@@ -154,6 +154,7 @@ class GamePanel extends StatelessWidget {
     this.radius = 20,
     this.tint,
     this.border,
+    this.background,
   });
 
   final Widget child;
@@ -161,6 +162,9 @@ class GamePanel extends StatelessWidget {
   final double radius;
   final Color? tint;
   final Color? border;
+
+  /// Дополнительная подложка для читаемости на ярких иллюстрациях.
+  final Color? background;
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +175,8 @@ class GamePanel extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            (tint ?? Colors.white).withOpacity(0.18),
-            (tint ?? Colors.white).withOpacity(0.06),
+            Color.alphaBlend((tint ?? Colors.white).withOpacity(0.18), background ?? Colors.transparent),
+            Color.alphaBlend((tint ?? Colors.white).withOpacity(0.06), background ?? Colors.transparent),
           ],
         ),
         borderRadius: BorderRadius.circular(radius),

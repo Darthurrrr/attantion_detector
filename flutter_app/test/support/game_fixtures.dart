@@ -29,7 +29,7 @@ class SilentAudio implements GameAudio {
   Future<void> dispose() async {}
 }
 
-GameController makeController() {
+GameController makeController({String worldTheme = 'world_meadow'}) {
   final controller = GameController(
     api: Api(baseUrl: 'https://example.invalid'),
     audio: SilentAudio(),
@@ -45,7 +45,7 @@ GameController makeController() {
     ],
     'items': <String>[],
     'equipped': <String>[],
-    'themes': <String, dynamic>{},
+    'themes': <String, dynamic>{'world': worldTheme},
     'daily': {'streak': 0, 'canClaim': true},
     'tasks': {'progress': <String, dynamic>{}, 'claimed': <String>[]},
     'events': <String, dynamic>{},

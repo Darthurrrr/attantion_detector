@@ -9,6 +9,7 @@ import '../state/game_controller.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
+import '../widgets/layered_scene.dart';
 import '../widgets/top_bar.dart';
 import 'trainings_screen.dart';
 import 'collection_screen.dart';
@@ -37,8 +38,10 @@ class HomeScreen extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 420),
-            child: SceneBackground(key: ValueKey(worldAsset), asset: worldAsset, veil: 0.18, sparkles: true),
+            duration: MediaQuery.of(context).disableAnimations ? Duration.zero : const Duration(milliseconds: 420),
+            child: worldAsset == null
+                ? const LayeredScene.meadow(key: ValueKey('world_meadow'))
+                : SceneBackground(key: ValueKey(worldAsset), asset: worldAsset, veil: 0.18, sparkles: true),
           ),
           SafeArea(
             child: OrientationBuilder(
@@ -117,11 +120,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  static String _worldAsset(String id) => switch (id) {
+  // Остальные выбранные миры сохраняют свои существующие изображения.
+  // null означает стандартную поляну с отдельными планами.
+  static String? _worldAsset(String id) => switch (id) {
         'world_cosmos' => 'assets/bg/cosmic.webp',
         'world_summon' => 'assets/bg/summon.webp',
         'world_collection' => 'assets/bg/collection.webp',
-        _ => 'assets/bg/home.webp',
+        _ => null,
       };
 }
 
@@ -234,6 +239,8 @@ class _PetStageState extends State<PetStage> with TickerProviderStateMixin {
               ),
             ),
           ),
+          if (HomeScreen._worldAsset(widget.state.worldTheme) == null)
+            const Positioned.fill(child: MeadowForeground()),
           if (_hearts)
             Positioned(
               top: 12,
@@ -349,6 +356,7 @@ class _RotateHint extends StatelessWidget {
     return GamePanel(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       radius: 12,
+      background: paletteOf(context).deep.withOpacity(0.78),
       child: Row(
         children: [
           const Icon(Icons.screen_rotation_rounded, size: 14, color: Palette.gold),
@@ -381,6 +389,7 @@ class _MenuGrid extends StatelessWidget {
     ];
     return GamePanel(
       padding: const EdgeInsets.all(10),
+      background: palette.deep.withOpacity(0.78),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final columns = constraints.maxWidth > 380 ? 3 : 2;
@@ -472,6 +481,7 @@ class _StartPanel extends StatelessWidget {
     final nextLevel = _nextLevel(state);
     return GamePanel(
       padding: const EdgeInsets.all(12),
+      background: paletteOf(context).deep.withOpacity(0.78),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -522,6 +532,7 @@ class _DailyStrip extends StatelessWidget {
     final claimed = !state.dailyCanClaim;
     return GamePanel(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      background: paletteOf(context).deep.withOpacity(0.78),
       child: Row(
         children: [
           Container(

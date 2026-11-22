@@ -3,8 +3,10 @@ import 'package:attention_detector/screens/events_screen.dart';
 import 'package:attention_detector/screens/home_screen.dart';
 import 'package:attention_detector/screens/play_screen.dart';
 import 'package:attention_detector/screens/shop_screen.dart';
+import 'package:attention_detector/screens/summon_screen.dart';
 import 'package:attention_detector/screens/trainings_screen.dart';
 import 'package:attention_detector/widgets/ambient_effects.dart';
+import 'package:attention_detector/widgets/top_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -51,6 +53,7 @@ void main() {
       const ShopScreen(),
       const EventsScreen(),
       const TrainingsScreen(),
+      const SummonScreen(),
     ]) {
       testWidgets('${screen.runtimeType} помещается: ${size.width} × ${size.height}', (tester) async {
         await tester.binding.setSurfaceSize(size);
@@ -61,6 +64,37 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }, reason: '${screen.runtimeType}, $size');
         expect(find.byType(AmbientSparkles), findsOneWidget);
+        await tester.pumpWidget(const SizedBox.shrink());
+        controller.dispose();
+      });
+    }
+  }
+
+  for (final layout in <({Size size, EdgeInsets padding})>[
+    (size: const Size(390, 844), padding: const EdgeInsets.fromLTRB(0, 30, 0, 24)),
+    (size: const Size(844, 390), padding: const EdgeInsets.fromLTRB(36, 0, 36, 16)),
+  ]) {
+    for (final screen in <Widget>[const HomeScreen(), const SummonScreen()]) {
+      testWidgets('${screen.runtimeType}: интерфейс остаётся в безопасной области ${layout.size}', (tester) async {
+        await tester.binding.setSurfaceSize(layout.size);
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final controller = makeController();
+        await expectNoFlutterError(tester, () async {
+          await tester.pumpWidget(GameScope(
+            controller: controller,
+            child: MaterialApp(
+              home: MediaQuery(
+                data: MediaQueryData(size: layout.size, padding: layout.padding, viewPadding: layout.padding),
+                child: screen,
+              ),
+            ),
+          ));
+          await tester.pump(const Duration(milliseconds: 100));
+        }, reason: '${screen.runtimeType}, safe area');
+        final bar = tester.getRect(find.byType(GameTopBar));
+        expect(bar.left, greaterThanOrEqualTo(layout.padding.left));
+        expect(bar.right, lessThanOrEqualTo(layout.size.width - layout.padding.right));
+        expect(bar.top, greaterThanOrEqualTo(layout.padding.top));
         await tester.pumpWidget(const SizedBox.shrink());
         controller.dispose();
       });

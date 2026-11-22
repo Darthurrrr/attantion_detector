@@ -14,9 +14,14 @@ import type { Screen } from './game/types'
 type ModalName = 'tasks' | 'events' | 'daily' | 'shop' | 'settings' | null
 
 const PRELOAD = [
-  '/assets/bg/home.webp',
+  '/assets/bg/meadow_landscape.webp',
+  '/assets/bg/meadow_portrait.webp',
   '/assets/bg/map.webp',
-  '/assets/bg/summon.webp',
+  '/assets/bg/summon_landscape.webp',
+  '/assets/bg/summon_portrait.webp',
+  '/assets/layers/floating_island.png',
+  '/assets/layers/meadow_foreground.png',
+  '/assets/layers/summon_crystals.png',
   '/assets/bg/collection.webp',
   '/assets/bg/cosmic.webp',
   '/assets/bg/splash.webp',
@@ -120,7 +125,7 @@ function Shell() {
   return (
     <div className="app-shell">
       <div className="app-shell__halo" />
-      <div className="stage">
+      <div className={`stage ${screen === 'home' || screen === 'summon' ? 'stage--scene-wide' : ''}`}>
         {screen === 'home' && (
           <Home
             go={go}

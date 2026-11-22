@@ -39,8 +39,12 @@ jobs:
       - name: Сборка
         working-directory: app
         run: npm run build
-      - name: Общие иллюстрации синхронизированы
+      - name: Сцены и управление в Chrome
+        working-directory: app
+        run: npm run test:scenes
+      - name: Каталог и общие ресурсы синхронизированы
         run: |
+          python3 tools/verify_scene_assets.py
           for scene in shop events training; do
             cmp "app/public/assets/bg/${scene}_scene.webp" "flutter_app/assets/bg/${scene}_scene.webp"
           done

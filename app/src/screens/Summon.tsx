@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useGame } from '../game/store'
 import { PETS, RARITY, SUMMON_POOL } from '../game/data'
 import { Btn, Coin, Confetti, Gem, HintIcon, Modal, Progress, ResPill, ScreenHeader } from '../components/ui'
+import SceneLayers from '../components/SceneLayers'
 import { IconBook, IconEgg, IconInfo, IconPaw, IconSparkle, IconTrophy } from '../components/Icon'
 import { playSound } from '../game/audio'
 import type { SummonResult } from '../game/types'
@@ -70,7 +71,7 @@ export default function Summon({ onBack, onShop }: { onBack: () => void; onShop:
 
   return (
     <div className="screen summon">
-      <div className="bg-layer bg-layer--summon" />
+      <SceneLayers scene="summon" />
       <div className="summon-shade" />
       <div className="sparkles" aria-hidden>
         <i style={{ left: '18%', top: '26%' }} />
@@ -120,15 +121,16 @@ export default function Summon({ onBack, onShop }: { onBack: () => void; onShop:
       </div>
 
       <div className="summon-stage">
-        <div className="summon-crystals" aria-hidden>
-          <span className="crystal crystal--1" />
-          <span className="crystal crystal--2" />
-          <span className="crystal crystal--3" />
-        </div>
         <div className="summon-egg">
           <span className="summon-egg__aura" />
           <span className="summon-egg__beams" aria-hidden />
-          <img src="/assets/ui/egg_0.png" alt="Магическое яйцо" draggable={false} />
+          <span className="summon-crystal summon-crystal--left" aria-hidden="true">
+            <img src="/assets/layers/summon_crystals.png" alt="" draggable={false} />
+          </span>
+          <span className="summon-crystal summon-crystal--right" aria-hidden="true">
+            <img src="/assets/layers/summon_crystals.png" alt="" draggable={false} />
+          </span>
+          <img className="summon-egg__image" src="/assets/ui/egg_0.png" alt="Магическое яйцо" draggable={false} />
           <span className="summon-egg__mark" aria-hidden>
             <IconPaw size={64} />
           </span>

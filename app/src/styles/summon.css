@@ -130,49 +130,26 @@
   pointer-events: none;
 }
 
-.summon-crystals {
+.summon-crystal {
   position: absolute;
-  inset: 0;
+  bottom: 5%;
+  width: 30%;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 8px rgba(14, 2, 31, 0.45));
 }
 
-.crystal {
-  position: absolute;
-  width: 34px;
-  height: 62px;
-  background: linear-gradient(160deg, #f2d9ff, #b06bf0 45%, #6b2bb2);
-  clip-path: polygon(50% 0, 100% 30%, 82% 100%, 18% 100%, 0 30%);
-  box-shadow: 0 0 22px rgba(180, 110, 255, 0.65);
-  opacity: 0.9;
-}
+.summon-crystal--left { left: -17%; }
+.summon-crystal--right { right: -17%; width: 24%; transform: scaleX(-1); }
 
-.crystal::after {
-  content: '';
-  position: absolute;
-  inset: 6px 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 60%);
-  clip-path: polygon(50% 0, 100% 34%, 78% 100%, 22% 100%, 0 34%);
-}
-
-.crystal--1 {
-  left: 13%;
-  top: 40%;
-  transform: rotate(-14deg) scale(0.9);
-  animation: floatY 4.4s ease-in-out infinite;
-}
-
-.crystal--2 {
-  right: 11%;
-  top: 52%;
-  transform: rotate(16deg) scale(0.7);
-  animation: floatY 5.2s ease-in-out infinite reverse;
-}
-
-.crystal--3 {
-  right: 21%;
-  top: 27%;
-  transform: rotate(6deg) scale(0.5);
+.summon-crystal img {
+  display: block;
+  width: 100%;
+  height: auto;
   animation: floatY 6s ease-in-out infinite;
 }
+
+.summon-crystal--right img { animation-duration: 8s; animation-delay: -2s; }
 
 .summon-egg {
   position: relative;
@@ -204,7 +181,7 @@
   }
 }
 
-.summon-egg img {
+.summon-egg__image {
   position: relative;
   z-index: 2;
   width: 208px;
@@ -901,7 +878,7 @@
     height: 186px;
   }
 
-  .summon-egg img {
+  .summon-egg__image {
     width: 156px;
     height: 156px;
   }
@@ -917,7 +894,7 @@
     height: 210px;
   }
 
-  .summon-egg img {
+  .summon-egg__image {
     width: 176px;
     height: 176px;
   }
@@ -958,5 +935,36 @@
   .summon-link {
     padding: 5px 7px;
     font-size: 9.5px;
+  }
+}
+
+/* В ландшафте яйцо остаётся в отдельной сцене, а действия — справа. */
+@media (orientation: landscape) and (min-width: 640px) {
+  .summon-pity {
+    display: flex;
+    top: calc(env(safe-area-inset-top, 0px) + 78px);
+    right: calc(env(safe-area-inset-right, 0px) + 18px);
+    width: min(38%, 360px);
+  }
+
+  .summon-stage {
+    left: calc(env(safe-area-inset-left, 0px) + 10px);
+    right: 44%;
+    top: calc(env(safe-area-inset-top, 0px) + 66px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .summon-egg { width: min(50dvh, 280px); height: min(50dvh, 280px); }
+  .summon-egg__image { width: 83%; height: 83%; }
+  .summon-egg__pedestal { width: 94%; height: 25%; }
+
+  .summon-bottom {
+    left: auto;
+    right: calc(env(safe-area-inset-right, 0px) + 18px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    width: min(38%, 360px);
+    padding: 0;
   }
 }

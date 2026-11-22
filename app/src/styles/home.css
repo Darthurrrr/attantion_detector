@@ -363,6 +363,26 @@
   z-index: 1;
 }
 
+.home-hero__foreground {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.home-hero__plants {
+  position: absolute;
+  bottom: 0;
+  width: min(27%, 105px);
+  max-height: 40%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 5px 5px rgba(12, 32, 17, 0.24));
+}
+
+.home-hero__plants--left { left: 0; }
+.home-hero__plants--right { right: 0; width: min(22%, 85px); transform: scaleX(-1); }
+
 .speech {
   position: absolute;
   z-index: 4;
@@ -756,4 +776,69 @@
 
 @media (max-height: 620px) {
   .daily-card__art img { width: 30px; height: 30px; }
+}
+
+/* Широкая сцена: питомец и окружение слева, прогресс и действия справа. */
+@media (orientation: landscape) and (min-width: 640px) {
+  .home-hud {
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    left: calc(env(safe-area-inset-left, 0px) + 16px);
+    right: calc(env(safe-area-inset-right, 0px) + 16px);
+  }
+
+  .rail {
+    top: calc(env(safe-area-inset-top, 0px) + 76px);
+    left: calc(env(safe-area-inset-left, 0px) + 16px);
+    width: auto;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .rail__btn { width: 66px; }
+  .rail__icon { width: 44px; height: 44px; border-radius: 15px; }
+
+  .daily-card {
+    top: calc(env(safe-area-inset-top, 0px) + 78px);
+    right: calc(env(safe-area-inset-right, 0px) + 18px);
+    width: 150px;
+  }
+
+  .home-hero {
+    left: calc(env(safe-area-inset-left, 0px) + 5%);
+    right: 51%;
+    top: calc(env(safe-area-inset-top, 0px) + 132px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    height: auto;
+  }
+
+  .home-hero__pet img {
+    height: min(62dvh, 320px);
+    max-height: 100%;
+  }
+
+  /* Подсказка сбоку от мордочки, а не поверх питомца. */
+  .speech { top: 2px; right: -110px; }
+
+  .home-panel {
+    left: auto;
+    right: calc(env(safe-area-inset-right, 0px) + 18px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    width: min(38%, 380px);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+  }
+
+  .home-play { width: 100%; height: 52px; }
+
+  .sound-fab {
+    left: 50%;
+    right: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  }
+}
+
+@media (orientation: landscape) and (min-width: 640px) and (min-height: 500px) {
+  .home-hero .speech { top: auto; bottom: min(48dvh, 260px); }
 }

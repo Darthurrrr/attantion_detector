@@ -132,6 +132,23 @@ select {
   }
 }
 
+/* У главной и призыва есть самостоятельная широкая композиция.
+   Остальные экраны веб-прототипа сохраняют прежнюю рамку. */
+@media (orientation: landscape) and (min-width: 640px) {
+  .stage--scene-wide {
+    width: min(1120px, 96vw);
+    height: min(720px, 94dvh);
+  }
+}
+
+@media (orientation: landscape) and (min-width: 640px) and (max-height: 600px) {
+  .stage--scene-wide {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+  }
+}
+
 .screen {
   position: absolute;
   inset: 0;
@@ -150,9 +167,37 @@ select {
   z-index: 0;
 }
 
+.scene-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-layers__island {
+  position: absolute;
+  z-index: 1;
+  left: 10%;
+  top: 23%;
+  width: 19%;
+  animation: scene-island-drift 7s ease-in-out infinite;
+}
+
+.scene-layers__island img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes scene-island-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
 .bg-layer--home {
-  background-image: url('/assets/bg/home.webp');
-  background-position: center bottom;
+  background-image: url('/assets/bg/meadow_portrait.webp');
+  background-position: center center;
 }
 
 .bg-layer--map {
@@ -161,8 +206,14 @@ select {
 }
 
 .bg-layer--summon {
-  background-image: url('/assets/bg/summon.webp');
-  background-position: center bottom;
+  background-image: url('/assets/bg/summon_portrait.webp');
+  background-position: center center;
+}
+
+@media (orientation: landscape) and (min-width: 640px) {
+  .bg-layer--home { background-image: url('/assets/bg/meadow_landscape.webp'); }
+  .bg-layer--summon { background-image: url('/assets/bg/summon_landscape.webp'); }
+  .scene-layers__island { left: 37%; top: 18%; width: 12%; }
 }
 
 .bg-layer--collection {

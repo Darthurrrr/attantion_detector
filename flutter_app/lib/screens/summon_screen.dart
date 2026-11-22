@@ -9,6 +9,7 @@ import '../games/egg_reveal.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
+import '../widgets/layered_scene.dart';
 import '../widgets/top_bar.dart';
 
 /// Вкладка «Призыв»: универсальное яйцо, гаранты, история и правила.
@@ -93,7 +94,7 @@ class _SummonScreenState extends State<SummonScreen> with SingleTickerProviderSt
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const SceneBackground(asset: 'assets/bg/summon.webp', veil: 0.3, blur: 1, sparkles: true),
+          const LayeredScene.summon(),
           SafeArea(
             child: OrientationBuilder(
               builder: (context, orientation) {
@@ -204,6 +205,7 @@ class _EggStage extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(child: CustomPaint(painter: _AuraPainter(palette.accent))),
+          const Positioned.fill(child: SummonStageCrystals()),
           Center(
             child: AnimatedBuilder(
               animation: controller,
@@ -242,14 +244,19 @@ class _EggStage extends StatelessWidget {
             left: 8,
             right: 8,
             bottom: 4,
-            child: Row(
-              children: [
-                _PityRing(value: state.pityEpic, max: 5, label: 'Эпический', color: Palette.violet),
-                const SizedBox(width: 10),
-                _PityRing(value: state.pityLegendary, max: 10, label: 'Легендарный', color: Palette.gold),
-                const Spacer(),
-                Text('Призывов: ${state.pityTotal}', style: AppText.tiny),
-              ],
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _PityRing(value: state.pityEpic, max: 5, label: 'Эпический', color: Palette.violet),
+                  const SizedBox(width: 10),
+                  _PityRing(value: state.pityLegendary, max: 10, label: 'Легендарный', color: Palette.gold),
+                  const SizedBox(width: 10),
+                  Text('Призывов: ${state.pityTotal}', style: AppText.tiny),
+                ],
+              ),
             ),
           ),
         ],
@@ -349,6 +356,7 @@ class _OpenPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return GamePanel(
       padding: const EdgeInsets.all(12),
+      background: paletteOf(context).deep.withOpacity(0.75),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -428,6 +436,7 @@ class _History extends StatelessWidget {
     final rows = filter == null ? state.history : state.history.where((h) => h['rarity'] == filter).toList();
     return GamePanel(
       padding: const EdgeInsets.all(10),
+      background: paletteOf(context).deep.withOpacity(0.75),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
