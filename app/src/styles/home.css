@@ -296,7 +296,12 @@
   padding: 2px 8px;
   border: 1px solid #cbffb0;
   box-shadow: 0 2px 0 #226d21;
-  animation: floatY 1.8s ease-in-out infinite;
+  animation: daily-ready-shimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes daily-ready-shimmer {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.14); }
 }
 
 .daily-card.is-ready {

@@ -97,6 +97,12 @@ async function runScene(browser, { width, height, reduced = false }) {
     const islandAfter = await page.$eval('.scene-layers__island', (e) => getComputedStyle(e).transform)
     if (reduced) assert.equal(islandBefore, islandAfter, 'остров не должен двигаться при reduced motion')
     else assert.notEqual(islandBefore, islandAfter, 'остров должен двигаться независимо')
+    const dailyGap = await page.$eval('.daily-card', (card) => {
+      const title = card.querySelector('.daily-card__title').getBoundingClientRect()
+      const badge = card.querySelector('.daily-card__ready').getBoundingClientRect()
+      return badge.top - title.bottom
+    })
+    assert.ok(dailyGap >= 0, 'подпись ежедневной награды перекрыта анимацией')
 
     await assertClickable(page, '.home-hero__pet')
     await assertClickable(page, '.rail__btn:nth-child(4)')
