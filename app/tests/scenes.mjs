@@ -21,12 +21,15 @@ async function ready() {
   await new Promise((done, fail) => {
     const timeout = setTimeout(() => fail(new Error(`Vite не запустился:\n${viteLog}`)), 20000)
     const check = () => {
-      if (/Local:\s+http/.test(viteLog)) {
+      // В CI Vite может вставлять ANSI-цвет прямо между «Local» и двоеточием.
+      const plainLog = viteLog.replace(/\u001b\[[0-9;]*m/g, '')
+      if (/Local:\s+http/.test(plainLog)) {
         clearTimeout(timeout)
         done()
       }
     }
     vite.stdout.on('data', check)
+    vite.stderr.on('data', check)
     vite.on('error', fail)
     vite.on('exit', (code) => fail(new Error(`Vite завершился (${code}):\n${viteLog}`)))
     check()

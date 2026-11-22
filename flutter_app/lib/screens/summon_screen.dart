@@ -365,8 +365,18 @@ class _OpenPanel extends StatelessWidget {
             children: [
               const EggIcon(size: 18),
               const SizedBox(width: 6),
-              Text('Яиц в инвентаре: ${state.eggs}', style: AppText.h2),
-              const Spacer(),
+              Expanded(
+                child: Semantics(
+                  label: 'Яиц в инвентаре: ${state.eggs}',
+                  excludeSemantics: true,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text('Яиц: ${state.eggs}', style: AppText.h2),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               TextButton(
                 onPressed: onRules,
                 style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 26)),
@@ -442,8 +452,14 @@ class _History extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('История призывов', style: AppText.h2),
-              const Spacer(),
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text('История призывов', style: AppText.h2),
+                ),
+              ),
+              const SizedBox(width: 6),
               Text('${state.history.length}', style: AppText.tiny),
             ],
           ),
