@@ -74,7 +74,10 @@ async function runScene(browser, { width, height, reduced = false }) {
     await page.goto(url, { waitUntil: 'domcontentloaded' })
     await page.waitForSelector('.home-hero__pet')
     const splash = await page.$('.splash')
-    if (splash) await splash.click()
+    if (splash) {
+      assert.equal(await page.$eval('.stage', (stage) => stage.classList.contains('stage--scene-wide')), false)
+      await splash.click()
+    }
     await page.waitForFunction(() => !document.querySelector('.splash'))
     // Приветствие может появиться на следующем кадре или уже успеть скрыться.
     await page.waitForSelector('.toast', { timeout: 3000 }).catch(() => null)

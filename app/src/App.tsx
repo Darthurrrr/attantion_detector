@@ -125,7 +125,7 @@ function Shell() {
   return (
     <div className="app-shell">
       <div className="app-shell__halo" />
-      <div className={`stage ${screen === 'home' || screen === 'summon' ? 'stage--scene-wide' : ''}`}>
+      <div className={`stage ${!splash && (screen === 'home' || screen === 'summon') ? 'stage--scene-wide' : ''}`}>
         {screen === 'home' && (
           <Home
             go={go}
