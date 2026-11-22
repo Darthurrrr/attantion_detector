@@ -7,6 +7,7 @@ import '../data/models.dart';
 import '../theme/app_text.dart';
 import '../theme/palette.dart';
 import '../widgets/game_ui.dart';
+import '../widgets/layered_scene.dart';
 import '../widgets/top_bar.dart';
 
 /// Инвентарь: яйца, косметика, темы и коллекционные предметы.
@@ -348,7 +349,7 @@ class _ItemTile extends StatelessWidget {
         ),
         child: Column(
           children: [
-            SizedBox(height: 40, child: Image.asset(item.asset, fit: BoxFit.contain)),
+            SizedBox(height: 40, child: Image.asset(worldPreviewAsset(item.id, item.asset), fit: BoxFit.contain)),
             Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Colors.white)),
             Text(
               onTap == null ? 'коллекция' : (equipped ? 'надето' : 'надеть'),

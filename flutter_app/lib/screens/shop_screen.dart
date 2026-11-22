@@ -6,6 +6,7 @@ import '../theme/app_text.dart';
 import '../theme/palette.dart';
 import '../widgets/ambient_effects.dart';
 import '../widgets/game_ui.dart';
+import '../widgets/layered_scene.dart';
 import '../widgets/top_bar.dart';
 
 /// Магазин: яйца (с выбором количества) и предметы по категориям.
@@ -147,7 +148,7 @@ class _ShopScreenState extends State<ShopScreen> {
           children: [
             RarityBadge(rarity: item.rarity),
             const SizedBox(height: 6),
-            SizedBox(height: 96, child: Image.asset(item.asset, fit: BoxFit.contain)),
+            SizedBox(height: 96, child: Image.asset(worldPreviewAsset(item.id, item.asset), fit: BoxFit.contain)),
             const SizedBox(height: 6),
             Text(item.name, style: AppText.h1, textAlign: TextAlign.center),
             Text(item.kindLabel, style: AppText.tiny),
@@ -403,7 +404,7 @@ class _ShopCard extends StatelessWidget {
                   const Icon(Icons.check_rounded, size: 15, color: Colors.white54),
               ],
             ),
-            Expanded(child: Image.asset(item.asset, fit: BoxFit.contain)),
+            Expanded(child: Image.asset(worldPreviewAsset(item.id, item.asset), fit: BoxFit.contain)),
             Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.h2),
             Text(item.desc, maxLines: 2, overflow: TextOverflow.ellipsis, style: AppText.tiny),
             const SizedBox(height: 4),

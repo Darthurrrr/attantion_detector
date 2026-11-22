@@ -39,8 +39,24 @@ jobs:
       - name: Сборка
         working-directory: app
         run: npm run build
-      - name: Общие иллюстрации синхронизированы
+      - name: Сцены и управление в Chrome
+        working-directory: app
         run: |
+          set +e
+          npm run test:scenes > /tmp/web-scenes.txt 2>&1
+          code=$?
+          cat /tmp/web-scenes.txt
+          if [ "$code" -ne 0 ]; then
+            while IFS= read -r line; do
+              line=${line//'%'/'%25'}
+              line=${line//$'\r'/'%0D'}
+              echo "::error::$line"
+            done < <(tail -n 35 /tmp/web-scenes.txt)
+          fi
+          exit $code
+      - name: Каталог и общие ресурсы синхронизированы
+        run: |
+          python3 tools/verify_scene_assets.py
           for scene in shop events training; do
             cmp "app/public/assets/bg/${scene}_scene.webp" "flutter_app/assets/bg/${scene}_scene.webp"
           done

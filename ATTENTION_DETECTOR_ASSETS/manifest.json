@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "catalog": "01_World/Meadow/Backgrounds/meadow_landscape.webp",
+      "runtime": "bg/meadow_landscape.webp",
+      "format": "webp", "width": 1376, "height": 768, "alpha": false,
+      "purpose": "Горизонтальный дальний план поляны", "screens": ["Главная"]
+    },
+    {
+      "catalog": "01_World/Meadow/Backgrounds/meadow_portrait.webp",
+      "runtime": "bg/meadow_portrait.webp",
+      "format": "webp", "width": 768, "height": 1376, "alpha": false,
+      "purpose": "Вертикальный дальний план поляны", "screens": ["Главная"]
+    },
+    {
+      "catalog": "01_World/Meadow/Layers/floating_island.png",
+      "runtime": "layers/floating_island.png",
+      "format": "png", "width": 800, "height": 505, "alpha": true,
+      "purpose": "Отдельный парящий остров", "screens": ["Главная"]
+    },
+    {
+      "catalog": "01_World/Meadow/Layers/meadow_foreground.png",
+      "runtime": "layers/meadow_foreground.png",
+      "format": "png", "width": 630, "height": 520, "alpha": true,
+      "purpose": "Передний план: растения, цветы и камни", "screens": ["Главная"]
+    },
+    {
+      "catalog": "05_Summon/Sanctuary/Backgrounds/summon_landscape.webp",
+      "runtime": "bg/summon_landscape.webp",
+      "format": "webp", "width": 1376, "height": 768, "alpha": false,
+      "purpose": "Горизонтальный дальний план святилища", "screens": ["Призыв"]
+    },
+    {
+      "catalog": "05_Summon/Sanctuary/Backgrounds/summon_portrait.webp",
+      "runtime": "bg/summon_portrait.webp",
+      "format": "webp", "width": 768, "height": 1376, "alpha": false,
+      "purpose": "Вертикальный дальний план святилища", "screens": ["Призыв"]
+    },
+    {
+      "catalog": "05_Summon/Sanctuary/Layers/summon_crystals.png",
+      "runtime": "layers/summon_crystals.png",
+      "format": "png", "width": 438, "height": 700, "alpha": true,
+      "purpose": "Отдельные кристаллы вокруг яйца", "screens": ["Призыв"]
+    },
+    {
+      "catalog": "14_Audio/Effects/ui_tap.wav", "runtime": "sounds/ui_tap.wav",
+      "format": "wav", "sampleRate": 44100, "channels": 1,
+      "purpose": "Нажатие кнопки", "screens": ["Общие элементы управления"]
+    },
+    {
+      "catalog": "14_Audio/Effects/success_chime.wav", "runtime": "sounds/success_chime.wav",
+      "format": "wav", "sampleRate": 44100, "channels": 1,
+      "purpose": "Успешное действие", "screens": ["Тренировки", "Результат"]
+    },
+    {
+      "catalog": "14_Audio/Effects/crystal_reward.wav", "runtime": "sounds/crystal_reward.wav",
+      "format": "wav", "sampleRate": 44100, "channels": 1,
+      "purpose": "Кристаллы и награды", "screens": ["Призыв", "Награды"]
+    },
+    {
+      "catalog": "14_Audio/Effects/pet_cuddle.wav", "runtime": "sounds/pet_cuddle.wav",
+      "format": "wav", "sampleRate": 44100, "channels": 1,
+      "purpose": "Поглаживание питомца", "screens": ["Главная"]
+    },
+    {
+      "catalog": "14_Audio/Effects/soft_transition.wav", "runtime": "sounds/soft_transition.wav",
+      "format": "wav", "sampleRate": 44100, "channels": 1,
+      "purpose": "Переход между экранами", "screens": ["Навигация"]
+    }
+  ]
+}

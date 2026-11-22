@@ -23,6 +23,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/bg/
+    - assets/layers/
     - assets/pets/
     - assets/sounds/
     - assets/ui/

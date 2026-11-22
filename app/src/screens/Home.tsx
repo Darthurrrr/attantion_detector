@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useGame, xpNeeded } from '../game/store'
 import { DAILY_TASKS, HERO_STAGES, LEVELS, LEVEL_BY_ID, PET_BY_ID, PET_LINES } from '../game/data'
 import { Btn, Countdown, HeartIcon, IconButton, Progress, ResPill, StarImg } from '../components/ui'
+import SceneLayers from '../components/SceneLayers'
 import {
   IconGear,
   IconMap,
@@ -57,7 +58,7 @@ export default function Home({ go, openTasks, openEvents, openDaily, openShop, o
 
   return (
     <div className="screen home">
-      <div className="bg-layer bg-layer--home" />
+      <SceneLayers scene="home" />
       <div className="scrim-top" />
       <div className="scrim-bottom" />
 
@@ -152,6 +153,10 @@ export default function Home({ go, openTasks, openEvents, openDaily, openShop, o
           <img src={heroImg} alt={pet.name} draggable={false} />
           <span className="home-hero__shadow" />
         </button>
+        <div className="home-hero__foreground" aria-hidden="true">
+          <img className="home-hero__plants home-hero__plants--left" src="/assets/layers/meadow_foreground.png" alt="" draggable={false} />
+          <img className="home-hero__plants home-hero__plants--right" src="/assets/layers/meadow_foreground.png" alt="" draggable={false} />
+        </div>
         {hearts.map((h) => (
           <span key={h.id} className="heart-pop" style={{ left: `${h.x}%` }}>
             <HeartIcon size={26} />
